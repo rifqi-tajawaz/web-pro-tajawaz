@@ -1,181 +1,179 @@
 /**
- * WhatsApp Contact Form Handler
- * Tajawaz Solutions - Contact Form to WhatsApp Integration
+ * ============================================================================
+ * WHATSAPP-CONTACT.JS - Handler Formulir Kontak ke WhatsApp
+ * ============================================================================
+ *
+ * @description
+ * Skrip ini menangani validasi dan pengiriman data dari formulir kontak
+ * ke WhatsApp dengan format pesan yang sudah ditentukan.
+ *
+ * @dependensi Tidak ada (Vanilla JS)
+ * ============================================================================
  */
 
-document.addEventListener('DOMContentLoaded', function() {
+'use strict';
+
+document.addEventListener('DOMContentLoaded', function () {
+  // ============================================================================
+  // KONSTANTA & ELEMEN DOM
+  // ============================================================================
+  const WHATSAPP_NUMBER = '6281945967926'; // Nomor WhatsApp tujuan
   const contactForm = document.getElementById('contactForm');
   const successMessage = document.getElementById('success-message');
   const errorMessage = document.getElementById('error-message');
-  
-  // WhatsApp number (format: country code + number without +)
-  const whatsappNumber = '6281945967926';
-  
-  if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      // Get form values
-      const firstName = document.getElementById('first-name').value.trim();
-      const lastName = document.getElementById('last-name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const subject = document.getElementById('subject').value.trim();
-      const message = document.getElementById('message').value.trim();
-      
-      // Validation
-      if (!email || !message) {
-        showError('Email dan Pesan harus diisi!');
-        return;
-      }
-      
-      // Validate email format
-      if (!isValidEmail(email)) {
-        showError('Format email tidak valid!');
-        return;
-      }
-      
-      // Construct full name
-      const fullName = [firstName, lastName].filter(n => n).join(' ') || 'Calon Client';
-      
-      // Format WhatsApp message with proper line breaks and formatting
-      let whatsappMessage = `*PESAN BARU DARI WEBSITE TAJAWAZ SOLUTIONS*\n\n`;
-      whatsappMessage += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-      whatsappMessage += `👤 *Nama:*\n${fullName}\n\n`;
-      whatsappMessage += `📧 *Email:*\n${email}\n\n`;
-      
-      if (subject) {
-        whatsappMessage += `📌 *Subjek:*\n${subject}\n\n`;
-      }
-      
-      whatsappMessage += `💬 *Pesan:*\n${message}\n\n`;
-      whatsappMessage += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-      whatsappMessage += `_Dikirim melalui Form Kontak Website_\n`;
-      whatsappMessage += `_${new Date().toLocaleString('id-ID', { 
-        dateStyle: 'long', 
-        timeStyle: 'short',
-        timeZone: 'Asia/Jakarta'
-      })}_`;
-      
-      // Encode message for URL
-      const encodedMessage = encodeURIComponent(whatsappMessage);
-      
-      // Create WhatsApp URL
-      const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-      
-      // Show success message
-      showSuccess();
-      
-      // Open WhatsApp in new tab after 3 SECOND DELAY
-      setTimeout(() => {
-        window.open(whatsappURL, '_blank');
-        
-        // Reset form after sending
-        setTimeout(() => {
-          contactForm.reset();
-          hideMessages();
-        }, 1000);
-      }, 3000); // DELAY 3 DETIK
-    });
-  }
-  
+  const emailInput = document.getElementById('email');
+  const messageInput = document.getElementById('message');
+
+  if (!contactForm) return;
+
+  // ============================================================================
+  // FUNGSI UTAMA
+  // ============================================================================
+
   /**
-   * Validate email format
+   * Menangani event submit pada formulir kontak.
+   * @param {Event} e - Event object.
+   */
+  function handleFormSubmit(e) {
+    e.preventDefault();
+
+    // Mengambil nilai dari form
+    const formData = new FormData(contactForm);
+    const firstName = formData.get('first-name').trim();
+    const lastName = formData.get('last-name').trim();
+    const email = formData.get('email').trim();
+    const subject = formData.get('subject').trim();
+    const message = formData.get('message').trim();
+
+    // Validasi
+    if (!email || !message) {
+      showError('Email dan Pesan harus diisi!');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      showError('Format email tidak valid!');
+      return;
+    }
+
+    // Membangun pesan WhatsApp
+    const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Calon Client';
+    const whatsappMessage = buildWhatsAppMessage(fullName, email, subject, message);
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+    // Menampilkan pesan sukses dan mengarahkan ke WhatsApp
+    showSuccess();
+    setTimeout(() => {
+      window.open(whatsappURL, '_blank');
+      setTimeout(() => {
+        contactForm.reset();
+        hideMessages();
+      }, 1000);
+    }, 3000);
+  }
+
+  // ============================================================================
+  // FUNGSI PEMBANTU (HELPERS)
+  // ============================================================================
+
+  /**
+   * Membangun string pesan untuk WhatsApp.
+   * @param {string} name - Nama lengkap pengirim.
+   * @param {string} email - Email pengirim.
+   * @param {string} subject - Subjek pesan.
+   * @param {string} message - Isi pesan.
+   * @returns {string} Pesan yang sudah diformat.
+   */
+  function buildWhatsAppMessage(name, email, subject, message) {
+    const now = new Date().toLocaleString('id-ID', {
+      dateStyle: 'long',
+      timeStyle: 'short',
+      timeZone: 'Asia/Jakarta',
+    });
+    let msg = `*PESAN BARU DARI WEBSITE TAJAWAZ SOLUTIONS*\n\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    msg += `👤 *Nama:*\n${name}\n\n`;
+    msg += `📧 *Email:*\n${email}\n\n`;
+    if (subject) {
+      msg += `📌 *Subjek:*\n${subject}\n\n`;
+    }
+    msg += `💬 *Pesan:*\n${message}\n\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    msg += `_Dikirim melalui Form Kontak Website_\n`;
+    msg += `_${now}_`;
+    return msg;
+  }
+
+  /**
+   * Memvalidasi format email.
+   * @param {string} email - Alamat email.
+   * @returns {boolean} `true` jika valid.
    */
   function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
-  
+
   /**
-   * Show success message with proper styling
+   * Menampilkan pesan sukses.
    */
   function showSuccess() {
     hideMessages();
     if (successMessage) {
       successMessage.classList.remove('hidden');
-      successMessage.classList.add('success', 'alert');
       successMessage.style.display = 'flex';
       successMessage.innerHTML = `
         <span class="check-icon"><i class="fa-solid fa-circle-check"></i></span>
-        <p style="margin: 0; font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); text-align: center; line-height: 1.6; color: var(--accent-color-2);">
-          Berhasil! Pesan Anda sedang disiapkan...<br>
-          <span style="font-size: var(--font-size-sm); font-weight: var(--font-weight-normal); opacity: 0.95;">
-            Anda akan diarahkan ke WhatsApp dalam 3 detik
-          </span>
-        </p>
-      `;
-      
-      // Scroll to message
+        <p>Berhasil! Anda akan diarahkan ke WhatsApp...</p>`;
       successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
-  
+
   /**
-   * Show error message with proper styling
+   * Menampilkan pesan error.
+   * @param {string} customMessage - Pesan error yang akan ditampilkan.
    */
   function showError(customMessage) {
     hideMessages();
     if (errorMessage) {
       errorMessage.classList.remove('hidden');
-      errorMessage.classList.add('error', 'alert');
       errorMessage.style.display = 'flex';
       errorMessage.innerHTML = `
         <span class="cross-icon"><i class="fa-solid fa-circle-xmark"></i></span>
-        <p style="margin: 0; font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); text-align: center; line-height: 1.6; color: var(--accent-color-2);">
-          ${customMessage || 'Oops! Terjadi kesalahan. Silakan coba lagi.'}
-        </p>
-      `;
-      
-      // Scroll to message
+        <p>${customMessage || 'Oops! Terjadi kesalahan.'}</p>`;
       errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      // Auto hide after 5 seconds
       setTimeout(hideMessages, 5000);
     }
   }
-  
+
   /**
-   * Hide all messages
+   * Menyembunyikan semua pesan umpan balik.
    */
   function hideMessages() {
-    if (successMessage) {
-      successMessage.classList.add('hidden');
-      successMessage.style.display = 'none';
-    }
-    if (errorMessage) {
-      errorMessage.classList.add('hidden');
-      errorMessage.style.display = 'none';
-    }
+    if (successMessage) successMessage.style.display = 'none';
+    if (errorMessage) errorMessage.style.display = 'none';
   }
-  
-  // Add input validation feedback
-  const emailInput = document.getElementById('email');
+
+  // ============================================================================
+  // EVENT LISTENERS
+  // ============================================================================
+
+  contactForm.addEventListener('submit', handleFormSubmit);
+
   if (emailInput) {
-    emailInput.addEventListener('blur', function() {
-      if (this.value && !isValidEmail(this.value)) {
-        this.style.borderColor = '#ef4444';
-      } else {
-        this.style.borderColor = '';
-      }
+    emailInput.addEventListener('blur', function () {
+      this.style.borderColor = this.value && !isValidEmail(this.value) ? '#ef4444' : '';
     });
-    
-    emailInput.addEventListener('input', function() {
+    emailInput.addEventListener('input', function () {
       this.style.borderColor = '';
     });
   }
-  
-  // Add required field indicators
-  const messageInput = document.getElementById('message');
+
   if (messageInput) {
-    messageInput.addEventListener('blur', function() {
-      if (!this.value.trim()) {
-        this.style.borderColor = '#ef4444';
-      } else {
-        this.style.borderColor = '';
-      }
+    messageInput.addEventListener('blur', function () {
+      this.style.borderColor = !this.value.trim() ? '#ef4444' : '';
     });
-    
-    messageInput.addEventListener('input', function() {
+    messageInput.addEventListener('input', function () {
       this.style.borderColor = '';
     });
   }

@@ -1,4 +1,7 @@
-<!-- CHANGED - content replaced from components/sidebar.html to keep template component content in sync -->
+<!-- ==========================================================================
+SIDEBAR KONTEN EDIT
+Sidebar ini berfungsi sebagai placeholder atau fungsionalitas edit konten.
+========================================================================== -->
 <div>
   <div class="content-overlay">
     <div class="content-edit-sidebar">
@@ -15,31 +18,30 @@
   </div>
 </div>
 
+<!-- ==========================================================================
+SIDEBAR NAVIGASI UTAMA (MOBILE)
+Sidebar ini berisi menu navigasi utama untuk tampilan mobile.
+========================================================================== -->
 <div>
   <div class="sidebar-overlay"></div>
   <div class="sidebar">
     <div class="sidebar-header">
+      <!-- Logo pada Sidebar -->
       <div class="logo">
-        <img
-          src="./assets/images/logos/brand/light-mode.svg"
-          class="site-logo img-fluid logo"
-          alt="Logo"
-          loading="lazy"
-        />
+        <img alt="Logo" class="site-logo img-fluid logo" loading="lazy" src="./assets/images/logos/brand/light-mode.svg" />
       </div>
-      <button class="close-btn" aria-label="Tutup menu" title="Tutup"><span>X</span></button>
+      <!-- Tombol Tutup Sidebar -->
+      <button aria-label="Tutup menu" class="close-btn" title="Tutup"><span>X</span></button>
     </div>
+    <!-- Daftar Menu Navigasi -->
     <ul class="menu">
       <li><a href="index.html">Beranda</a></li>
       <li><a href="about.html">Tentang Kami</a></li>
+      <!-- Dropdown Program & Layanan -->
       <li class="sidebar-dropdown">
         <div class="dropdown-header">
           <a href="#">Program & Layanan</a>
-          <button
-            class="sidebar-dropdown-btn"
-            aria-label="Buka menu Program & Layanan"
-            title="Buka submenu"
-          >
+          <button aria-label="Buka menu Program & Layanan" class="sidebar-dropdown-btn" title="Buka submenu">
             <i class="fa-solid fa-angle-down"></i>
           </button>
         </div>
@@ -49,10 +51,11 @@
           <li><a href="products-digital.html">Produk Digital</a></li>
         </ul>
       </li>
+      <!-- Dropdown Lainnya -->
       <li class="sidebar-dropdown">
         <div class="dropdown-header">
           <a href="#">Lainnya</a>
-          <button class="sidebar-dropdown-btn" aria-label="Buka menu Lainnya" title="Buka submenu">
+          <button aria-label="Buka menu Lainnya" class="sidebar-dropdown-btn" title="Buka submenu">
             <i class="fa-solid fa-angle-down"></i>
           </button>
         </div>
@@ -65,10 +68,11 @@
           <li><a href="faq.html">FAQs</a></li>
         </ul>
       </li>
+      <!-- Dropdown Artikel -->
       <li class="sidebar-dropdown">
         <div class="dropdown-header">
           <a href="#">Artikel</a>
-          <button class="sidebar-dropdown-btn" aria-label="Buka menu Artikel" title="Buka submenu">
+          <button aria-label="Buka menu Artikel" class="sidebar-dropdown-btn" title="Buka submenu">
             <i class="fa-solid fa-angle-down"></i>
           </button>
         </div>
@@ -81,38 +85,3 @@
     </ul>
   </div>
 </div>
-
-<!-- SEO ADDED: meta + OG + twitter + canonical -->
-<title>Tajawaz Solutions</title>
-<meta name="description" content="Learn more about Tajawaz Solutions" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Tajawaz Solutions" />
-<meta property="og:description" content="Learn more about Tajawaz Solutions" />
-<meta property="og:url" content="https://www.tajawaz.my.id/sidebar.html" />
-<meta property="og:image" content="./assets/images/logos/brand/light-mode.svg" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Tajawaz Solutions" />
-<meta name="twitter:description" content="Learn more about Tajawaz Solutions" />
-<link rel="canonical" href="https://www.tajawaz.my.id/sidebar.html" />
-<!-- /SEO ADDED -->
-
-<!-- SEO ADDED: JSON-LD Organization & Website -->
-<script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "name": "Tajawaz Solutions",
-        "url": "https://www.tajawaz.my.id",
-        "logo": "/assets/images/logos/brand/light-mode.svg"
-      },
-      { "@type": "WebSite", "url": "https://www.tajawaz.my.id", "name": "Tajawaz Solutions" }
-    ]
-  }
-</script>
-<!-- /SEO ADDED -->
-
-<!-- SEO ADDED: preload css -->
-<link rel="preload" href="./assets/css/style.css" as="style" />
-<!-- /SEO ADDED -->

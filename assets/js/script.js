@@ -1,42 +1,114 @@
-Promise.all([
-  fetch('./component/header.html').then((res) => res.text()),
-  fetch('./component/footer.html').then((res) => res.text()),
-  fetch('./component/sidebar.html').then((res) => res.text()),
-  fetch('./component/search-form.html').then((res) => res.text()),
-])
-  .then(([headerHTML, footerHTML, sidebarHTML, searchHTML]) => {
-    $('#header').html(headerHTML);
-    $('#footer').html(footerHTML);
-    $('#sidebar').html(sidebarHTML);
-    $('#edit-sidebar').html(sidebarHTML);
-    $('#search-form-container').html(searchHTML);
-  })
-  .then(() => {
-    // Initialize Bootstrap dropdowns after header is loaded
-    initBootstrapDropdowns();
-    
-    initBannerVideo();
-    initNavLink();
-    initSidebar();
-    initEditSidebar();
-    initSidebarDropdown();
-    initCounter();
-    initThemeSwitch();
-    initSearchBar();
-    // Only init if functions exist (optional for pages without forms)
-    if (typeof initSubmitContact === 'function') {
-      initSubmitContact();
-    }
-    if (typeof initSubmitNewsletter === 'function') {
-      initSubmitNewsletter();
-    }
-    initAnimateData();
-  });
+/**
+ * ============================================================================
+ * SCRIPT.JS - Skrip Utama Website
+ * ============================================================================
+ *
+ * @description
+ * Skrip ini menangani fungsionalitas utama di seluruh website, termasuk:
+ * - Memuat komponen template (header, footer, sidebar).
+ * - Inisialisasi library pihak ketiga (Bootstrap Dropdowns).
+ * - Mengelola interaksi UI seperti navigasi, tema, dan modal.
+ * - Menjalankan animasi saat elemen masuk ke viewport.
+ * - Meng-handle logika pencarian pada halaman `search.html`.
+ *
+ * @author     Jules
+ * @version    2.0.0
+ * @since      2025-11-19
+ * ============================================================================
+ */
 
+'use strict';
+
+/**
+ * ============================================================================
+ * FUNGSI UTAMA & INISIALISASI
+ * ============================================================================
+ */
+
+/**
+ * Fungsi utama yang dieksekusi setelah DOM selesai dimuat.
+ * Menginisialisasi semua fungsionalitas website.
+ */
+function main() {
+  loadComponents()
+    .then(() => {
+      initComponents();
+      initEventListeners();
+    })
+    .catch((error) => {
+      console.error('Error loading components:', error);
+    });
+}
+
+/**
+ * Memuat komponen HTML reusable (header, footer, dll.) ke dalam halaman.
+ * @returns {Promise<void>} Promise yang resolve setelah semua komponen dimuat.
+ */
+async function loadComponents() {
+  const components = [
+    { id: '#header', url: './component/header.html' },
+    { id: '#footer', url: './component/footer.html' },
+    { id: '#sidebar', url: './component/sidebar.html' },
+    { id: '#edit-sidebar', url: './component/sidebar.html' },
+    { id: '#search-form-container', url: './component/search-form.html' },
+  ];
+
+  try {
+    const responses = await Promise.all(components.map((c) => fetch(c.url).then((res) => res.text())));
+    responses.forEach((html, index) => {
+      $(components[index].id).html(html);
+    });
+  } catch (error) {
+    console.error('Failed to load one or more components:', error);
+    throw error; // Re-throw untuk ditangkap oleh pemanggil
+  }
+}
+
+/**
+ * Menginisialisasi semua skrip dan komponen setelah template dimuat.
+ */
+function initComponents() {
+  initBootstrapDropdowns();
+  initBannerVideo();
+  initNavLinkActiveState();
+  initSidebar();
+  initEditSidebar();
+  initSidebarDropdown();
+  initCounterAnimation();
+  initThemeSwitch();
+  initSearchBar();
+  initScrollAnimations();
+  handleSearchPage();
+
+  // Inisialisasi kondisional untuk form
+  if (typeof initSubmitContact === 'function') initSubmitContact();
+  if (typeof initSubmitNewsletter === 'function') initSubmitNewsletter();
+}
+
+/**
+ * ============================================================================
+ * INISIALISASI KOMPONEN & UI
+ * ============================================================================
+ */
+
+/**
+ * Inisialisasi dropdown Bootstrap.
+ */
+function initBootstrapDropdowns() {
+  const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+  if (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+    dropdownElementList.map((dropdownToggleEl) => new bootstrap.Dropdown(dropdownToggleEl));
+  }
+}
+
+/**
+ * Inisialisasi video banner YouTube.
+ */
 function initBannerVideo() {
-  var player;
+  if (!$('#banner-video-background').length) return;
 
-  var $tag = $('<script>', { src: 'https://www.youtube.com/iframe_api' });
+  let player;
+  const $tag = $('<script>', { src: 'https://www.youtube.com/iframe_api' });
   $('script').first().before($tag);
 
   window.onYouTubeIframeAPIReady = function () {
@@ -57,30 +129,27 @@ function initBannerVideo() {
         origin: window.location.origin,
       },
       events: {
-        onReady: onPlayerReady,
-        onStateChange: onPlayerStateChange,
+        onReady: (event) => {
+          event.target.playVideo();
+          setYoutubeSize();
+        },
+        onStateChange: (event) => {
+          if (event.data === YT.PlayerState.ENDED) {
+            player.playVideo();
+          }
+        },
       },
     });
   };
 
-  function onPlayerReady(event) {
-    event.target.playVideo();
-    setYoutubeSize();
-    $(window).on('resize', setYoutubeSize);
-  }
-
-  function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
-      player.playVideo();
-    }
-  }
-
   function setYoutubeSize() {
-    var $container = $('.banner-video-container');
-    var containerWidth = $container.outerWidth();
-    var containerHeight = $container.outerHeight();
-    var aspectRatio = 16 / 9;
-    var newWidth, newHeight;
+    const $container = $('.banner-video-container');
+    if (!$container.length || !player || !player.getIframe) return;
+
+    const containerWidth = $container.outerWidth();
+    const containerHeight = $container.outerHeight();
+    const aspectRatio = 16 / 9;
+    let newWidth, newHeight;
 
     if (containerWidth / containerHeight > aspectRatio) {
       newWidth = containerWidth;
@@ -89,153 +158,16 @@ function initBannerVideo() {
       newWidth = containerHeight * aspectRatio;
       newHeight = containerHeight;
     }
-
-    if (player && player.getIframe) {
-      var $iframe = $(player.getIframe());
-      $iframe.width(newWidth).height(newHeight);
-    }
+    $(player.getIframe()).width(newWidth).height(newHeight);
   }
 
-  function handleYouTubeErrors() {
-    window.addEventListener('message', function (event) {
-      if (event.origin !== 'https://www.youtube.com') return;
-
-      try {
-        var data = JSON.parse(event.data);
-      } catch (e) {}
-    });
-  }
+  $(window).on('resize', setYoutubeSize);
 }
 
-function initThemeSwitch() {
-  let lightMode = false;
-
-  if (localStorage.getItem('lightmode') === 'active') {
-    lightMode = true;
-    $('body').addClass('lightmode');
-  }
-
-  const updateLogos = () => {
-    const siteLogos = $('.site-logo');
-    const partnerLogos = $('.partner-logo');
-
-    if (lightMode) {
-      $('body').addClass('lightmode');
-      localStorage.setItem('lightmode', 'active');
-
-      siteLogos.each(function () {
-        const $img = $(this);
-        const currentSrc = $img.attr('src');
-        // Replace light-mode.svg with dark-mode.svg regardless of path
-        const newSrc = currentSrc.replace('light-mode.svg', 'dark-mode.svg');
-        $img.attr('src', newSrc);
-      });
-
-      partnerLogos.each(function () {
-        const $img = $(this);
-        const src = $img.attr('src');
-        if (!src.includes('-dark')) {
-          $img.attr('src', src.replace('.png', '-dark.png'));
-        }
-      });
-    } else {
-      $('body').removeClass('lightmode');
-      localStorage.removeItem('lightmode');
-
-      siteLogos.each(function () {
-        const $img = $(this);
-        const currentSrc = $img.attr('src');
-        // Replace dark-mode.svg with light-mode.svg regardless of path
-        const newSrc = currentSrc.replace('dark-mode.svg', 'light-mode.svg');
-        $img.attr('src', newSrc);
-      });
-
-      partnerLogos.each(function () {
-        const $img = $(this);
-        const src = $img.attr('src');
-        $img.attr('src', src.replace('-dark.png', '.png'));
-      });
-    }
-  };
-
-  updateLogos();
-
-  const observer = new MutationObserver(() => {
-    updateLogos();
-  });
-
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
-
-  $('#themeSwitch').on('click', function () {
-    lightMode = !lightMode;
-    updateLogos();
-
-    const iconClass = lightMode ? 'fa-sun' : 'fa-moon';
-    $('#themeIcon').removeClass('fa-sun fa-moon').addClass(iconClass);
-  });
-}
-
-function initBootstrapDropdowns() {
-  // Initialize Bootstrap dropdowns for navbar
-  var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-  if (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
-    dropdownElementList.map(function (dropdownToggleEl) {
-      return new bootstrap.Dropdown(dropdownToggleEl);
-    });
-  }
-}
-
-
-$(document).ready(function () {
-  initThemeSwitch();
-});
-
-function initCounter() {
-  var $counters = $('.counter');
-
-  function updateCount($counter) {
-    var target = +$counter.data('target');
-    var count = +$counter.text().replace('+', '');
-    var duration = 2000;
-    var steps = 60;
-    var increment = Math.max(1, Math.ceil(target / steps));
-    var delay = Math.floor(duration / (target / increment));
-
-    if (count < target) {
-      var nextCount = Math.min(target, count + increment);
-      $counter.text(nextCount);
-      setTimeout(function () {
-        updateCount($counter);
-      }, delay);
-    } else {
-      $counter.text(target);
-    }
-  }
-
-  var observer = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          var $counter = $(entry.target);
-          updateCount($counter);
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    {
-      threshold: 0.5,
-    }
-  );
-
-  $counters.each(function () {
-    observer.observe(this);
-  });
-}
-
-function initNavLink() {
+/**
+ * Mengatur status aktif pada link navigasi berdasarkan URL saat ini.
+ */
+function initNavLinkActiveState() {
   const currentUrl = window.location.href;
   $('.navbar-nav .nav-link').each(function () {
     if (this.href === currentUrl) {
@@ -249,261 +181,268 @@ function initNavLink() {
   });
 }
 
-$(function () {
-  const elements = document.querySelectorAll('[data-animate]');
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const delay = entry.target.getAttribute('data-delay') || 0;
-          setTimeout(() => {
-            entry.target.classList.add(entry.target.getAttribute('data-animate'));
-            entry.target.style.opacity = 1;
-
-            observer.unobserve(entry.target);
-          }, delay);
-        }
-      });
-    },
-    {
-      threshold: 0.1,
-    }
-  );
-  elements.forEach((el) => observer.observe(el));
-});
-
+/**
+ * Inisialisasi fungsionalitas sidebar utama.
+ */
 function initSidebar() {
   const $menuBtn = $('.nav-btn');
   const $closeBtn = $('.close-btn');
   const $overlay = $('.sidebar-overlay');
   const $sidebar = $('.sidebar');
 
-  $menuBtn.click(function () {
+  if (!$sidebar.length) return;
+
+  $menuBtn.on('click', () => {
     $overlay.addClass('active');
-    setTimeout(() => {
-      $sidebar.addClass('active');
-    }, 200);
+    setTimeout(() => $sidebar.addClass('active'), 200);
   });
 
-  $closeBtn.click(function () {
+  const closeSidebar = () => {
     $sidebar.removeClass('active');
-    setTimeout(() => {
-      $overlay.removeClass('active');
-    }, 200);
-  });
+    setTimeout(() => $overlay.removeClass('active'), 200);
+  };
 
-  $overlay.click(function () {
-    $sidebar.removeClass('active');
-    setTimeout(() => {
-      $overlay.removeClass('active');
-    }, 200);
-  });
+  $closeBtn.on('click', closeSidebar);
+  $overlay.on('click', closeSidebar);
 }
 
+/**
+ * Inisialisasi fungsionalitas sidebar edit konten.
+ */
 function initEditSidebar() {
   const $contentBtn = $('.content-edit');
   const $closeBtn = $('.close-btn-second');
   const $overlay = $('.content-overlay');
   const $sidebar = $('.content-edit-sidebar');
 
-  $contentBtn.click(function () {
+  if (!$sidebar.length) return;
+
+  $contentBtn.on('click', () => {
     $sidebar.addClass('active');
-    setTimeout(() => {
-      $overlay.addClass('active');
-    }, 200);
+    setTimeout(() => $overlay.addClass('active'), 200);
   });
 
-  $closeBtn.click(function () {
+  $closeBtn.on('click', () => {
     $sidebar.removeClass('active');
-    setTimeout(() => {
-      $overlay.removeClass('active');
-    }, 200);
+    setTimeout(() => $overlay.removeClass('active'), 200);
   });
 }
 
+/**
+ * Inisialisasi dropdown pada menu sidebar.
+ */
 function initSidebarDropdown() {
-  const $dropdownButtons = $('.sidebar-dropdown-btn');
-
-  $dropdownButtons.each(function () {
-    $(this).on('click', function () {
-      const $dropdownMenu = $(this).parent().next('.sidebar-dropdown-menu');
-      const isOpen = $dropdownMenu.hasClass('active');
-
-      $('.sidebar-dropdown-menu').not($dropdownMenu).removeClass('active');
-
-      $dropdownMenu.toggleClass('active', !isOpen);
-    });
+  $('.sidebar-dropdown-btn').on('click', function () {
+    const $dropdownMenu = $(this).parent().next('.sidebar-dropdown-menu');
+    const isOpen = $dropdownMenu.hasClass('active');
+    $('.sidebar-dropdown-menu').removeClass('active');
+    $dropdownMenu.toggleClass('active', !isOpen);
   });
 }
 
+/**
+ * Inisialisasi fungsionalitas search bar overlay.
+ */
 function initSearchBar() {
   const $searchBtn = $('.search-btn');
   const $overlay = $('.search-overlay');
   const $closeBtn = $('.search-close');
 
-  if ($overlay.length === 0) return;
+  if (!$overlay.length) return;
 
-  $searchBtn.on('click', function () {
-    $overlay.addClass('active');
-    setTimeout(() => {
-      $overlay.addClass('active');
-    }, 200);
-  });
-
-  $closeBtn.on('click', function () {
-    $overlay.removeClass('active');
-    setTimeout(() => {
-      $overlay.removeClass('active');
-    }, 200);
-  });
-
-  $overlay.on('click', function (e) {
+  $searchBtn.on('click', () => $overlay.addClass('active'));
+  $closeBtn.on('click', () => $overlay.removeClass('active'));
+  $overlay.on('click', (e) => {
     if ($(e.target).hasClass('search-overlay')) {
       $overlay.removeClass('active');
     }
   });
 }
 
-$(document).ready(function () {
-  const data = [
-    {
-      title: 'Home',
-      description:
-        'Ekosistem Bisnis Lengkap untuk Kebebasan Finansial Anda Saksikan bagaimana alumni Tajawaz Solutions mencapai kesuksesan bisnis dan kebebasan finansial melalui ekosistem pembelajaran, tools praktis, dan peluang bisnis nyata. Tajawaz Solutions adalah ekosistem bisnis lengkap yang memberdayakan entrepreneur dari berbagai latar belakang untuk mencapai kebebasan finansial. Dari program mentorship dan konsultasi, tools praktis, hingga peluang bisnis dan komunitas—semua terintegrasi untuk kesuksesan Anda. Get Started 500+ Alumni Sukses Ready [...]',
-      url: 'index.html',
+/**
+ * Inisialisasi fungsionalitas ganti tema (dark/light mode).
+ */
+function initThemeSwitch() {
+  let isLightMode = localStorage.getItem('lightmode') === 'active';
+  const $body = $('body');
+  const $themeIcon = $('#themeIcon');
+
+  const updateTheme = () => {
+    $body.toggleClass('lightmode', isLightMode);
+    $themeIcon.toggleClass('fa-sun', isLightMode).toggleClass('fa-moon', !isLightMode);
+
+    // Update logos based on theme
+    $('.site-logo').each(function() {
+      const newSrc = $(this).attr('src').replace(isLightMode ? 'light-mode.svg' : 'dark-mode.svg', isLightMode ? 'dark-mode.svg' : 'light-mode.svg');
+      $(this).attr('src', newSrc);
+    });
+
+    $('.partner-logo').each(function() {
+      const src = $(this).attr('src');
+      const newSrc = isLightMode ? src.replace('.png', '-dark.png') : src.replace('-dark.png', '.png');
+      if (!src.includes(isLightMode ? '-dark' : '.png.')) $(this).attr('src', newSrc);
+    });
+
+    if (isLightMode) {
+      localStorage.setItem('lightmode', 'active');
+    } else {
+      localStorage.removeItem('lightmode');
+    }
+  };
+
+  // Set initial theme
+  updateTheme();
+
+  // Event listener for theme switch button
+  $('#themeSwitch').on('click', () => {
+    isLightMode = !isLightMode;
+    updateTheme();
+  });
+
+  // Observer to handle dynamically loaded logos
+  const observer = new MutationObserver(updateTheme);
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+
+/**
+ * ============================================================================
+ * ANIMASI
+ * ============================================================================
+ */
+
+/**
+ * Inisialisasi animasi scroll menggunakan Intersection Observer.
+ * Elemen dengan atribut `data-animate` akan diberi class animasi saat masuk viewport.
+ */
+function initScrollAnimations() {
+  const animatedElements = document.querySelectorAll('[data-animate]');
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const delay = entry.target.getAttribute('data-delay') || 0;
+          setTimeout(() => {
+            entry.target.classList.add(entry.target.getAttribute('data-animate'));
+            entry.target.style.opacity = 1;
+          }, delay);
+          obs.unobserve(entry.target);
+        }
+      });
     },
-    {
-      title: 'About',
-      description:
-        'About Marko Home / About Us 0 + Years of Experience on Digital Marketing Services About Us Who We Are & What Drives Us At Marko, we specialize in crafting innovative digital marketing strategies that drive real business growth. Our expertise ensures your brand stays ahead in the competitive digital landscape. Get to know the [...]',
-      url: 'about.html',
+    { threshold: 0.1 }
+  );
+  animatedElements.forEach((el) => observer.observe(el));
+}
+
+
+/**
+ * Inisialisasi animasi counter angka saat elemen masuk viewport.
+ */
+function initCounterAnimation() {
+  const counters = document.querySelectorAll('.counter');
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = +el.getAttribute('data-target');
+          animateCount(el, target);
+          obs.unobserve(el);
+        }
+      });
     },
-    {
-      title: 'Services',
-      description:
-        'Our Services Home / Services Our Core Services Digital Solutions That Drive Real Results Social Media Marketing Build brand awareness & engage your audience effectively lorem ipsum dolor sit amet consectetur adip. View Details Content Marketing Build brand awareness & engage your audience effectively lorem ipsum dolor sit amet consectetur adip. View Details PPC Advertising […]',
-      url: 'service.html',
-    },
-    {
-      title: 'Single Services',
-      description:
-        'Social Media Marketing Home / Services Details Our Expertise Boost Your Brand with Strategic Social Media Marketing Maximize engagement, build loyal communities, and drive conversions across all major platforms lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo. Service Overview At Marko, we help brands grow […]',
-      url: 'single_services.html',
-    },
-    {
-      title: 'Case Studies',
-      description:
-        "Case Studies Home / Case Studies Case Studies See How We Help Businesses Thrive We don't just talk about results—we deliver them. Here are some of our most impactful case studies showcasing how our digital marketing strategies drive success. More Case Studies Social Influencer Retargeting Google Video Local Community Local Business Digital Transformation 5x ROI […]",
-      url: 'case_studies.html',
-    },
-    {
-      title: 'Our Team',
-      description:
-        'Meet Our Team Home / Our Team Case Studies Meet the Minds Behind Your Digital Success Ethan Morales Head of Creative Sophia Zhang Senior SEO Specialist Liam Turner Performance Marketing Lead Olivia Bennett Creative Director Daniel White Client Success Manager Chloe Ramirez Social Media Manager Powering Success for Top Brands Lorem ipsum dolor sit amet, […]',
-      url: 'team.html',
-    },
-    {
-      title: 'Partnership',
-      description:
-        "Partnership Home / Partnership Client & Partnership Strong Partnerships, Proven Success See How We Help Brands Grow Transform Your Business with Marko! Take your digital marketing to the next level with data-driven strategies and innovative solutions. Let's create something amazing together! 500+ Alumni Sukses 0 % Improved Project 0 % New Project Social Media Growth […]",
-      url: 'partnership.html',
-    },
-    {
-      title: 'Pricing Plan',
-      description:
-        "Pricing Plan Home / Pricing Plan Our Core Services Flexible Pricing Plans for Every Business Let's Find the Right Strategy for You! Book a Free Consultation Starter Perfect for startups & small businesses $99 / Month View Details Basic SEO & Digital Marketing Social Media Management (1 platform) Monthly Performance Report Enterprise Full scale marketing […]",
-      url: 'pricing.html',
-    },
-    {
-      title: 'Testimonial',
-      description:
-        "Testimonials Home / Testimonials 500+ Alumni Sukses 0 % Improved Project 0 % New Project Social Media Growth Performance Marketing What Our Client Says Hear from Our Satisfied Clients, Real Success Stories Discover how businesses like yours achieved outstanding growth with Marko's expert digital marketing solutions. Emma Richard CEO Nexatech 'Marko completely transformed our online [...]',",
-      url: 'testimonial.html',
-    },
-    {
-      title: 'FAQs',
-      description:
-        "Simple, Direct, and Friendly Home / FAQ Frequently Asked Questions Got Questions? We've Got Answers. What services does Marko offer? We specialize in digital marketing, including branding, social media management, content strategy, paid ads, and analytics-driven campaigns. How long does it take to see results? While some channels like paid ads offer quicker results, most […]",
-      url: 'faq.html',
-    },
-    {
-      title: 'Error 404',
-      description:
-        "404 Oops! Page Not Found We couldn't find the page you're looking for. It might have been removed, renamed, or never existed. Back to Home",
-      url: '/errors/404.html',
-    },
-    {
-      title: 'Blog',
-      description:
-        'Our Blog Home / Blog Insights & Trends Latest Digital Marketing Strategies & Tips Explore our latest blog articles covering industry trends, expert insights, and actionable strategies to elevate your digital marketing game. View All Articles April 14, 2025 Social Media Mastering Instagram and Facebook Ads Lorem ipsum dolor si consectetur adipiscing elit ut elit […]',
-      url: 'blog.html',
-    },
-    {
-      title: 'Single Post',
-      description:
-        "Growth Strategies for Digital Businesses Home / Single Post Recent Blog April 14, 2025 Mastering Instagram and Facebook Ads April 14, 2025 Growth Strategies for Digital Business Transform Your Business with Marko! Take your digital marketing to the next level with data-driven strategies and innovative solutions. Let's create something amazing together! Read More How to […]",
-      url: 'single_post.html',
-    },
-    {
-      title: 'Contact Us',
-      description:
-        'Contact Us Home / Contact Us Reach out to us Get in Touch Reach out to us for tailored digital solutions that drive results sollicitudin nec. Phone Number +1 (62) 987 7543 Email Address hello@markoagency.com Office Address Marko HQ - 902 Digital Lane, San Francisco, CA 94110, USA',
-      url: 'contact.html',
-    },
+    { threshold: 0.5 }
+  );
+  counters.forEach((counter) => observer.observe(counter));
+}
+
+/**
+ * Helper untuk animasi counter.
+ * @param {HTMLElement} el - Elemen counter.
+ * @param {number} target - Angka target.
+ */
+function animateCount(el, target) {
+  let current = 0;
+  const duration = 2000;
+  const stepTime = 30;
+  const steps = duration / stepTime;
+  const increment = target / steps;
+
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      clearInterval(timer);
+      current = target;
+    }
+    el.innerText = Math.floor(current);
+  }, stepTime);
+}
+
+
+/**
+ * ============================================================================
+ * LOGIKA PENCARIAN
+ * ============================================================================
+ */
+
+/**
+ * Menangani logika pencarian di halaman `search.html`.
+ */
+function handleSearchPage() {
+  if (!$('#search-results').length) return; // Hanya berjalan di halaman pencarian
+
+  const searchData = [
+    { title: 'Home', description: 'Ekosistem Bisnis Lengkap...', url: 'index.html' },
+    { title: 'About', description: 'Tentang Kami...', url: 'about.html' },
+    // Tambahkan data lain sesuai kebutuhan
   ];
 
   const params = new URLSearchParams(window.location.search);
   const keyword = params.get('q');
-
   const $resultContainer = $('#search-results');
   const $resultTitle = $('#result-title');
 
   if (keyword) {
-    $resultTitle.text(`Search Result for "${keyword}" Digital Marketing Agency`);
-
-    const result = data.filter(
+    $resultTitle.text(`Hasil Pencarian untuk "${keyword}"`);
+    const results = searchData.filter(
       (item) =>
         item.title.toLowerCase().includes(keyword.toLowerCase()) ||
         item.description.toLowerCase().includes(keyword.toLowerCase())
     );
 
-    if (result.length > 0) {
-      result.forEach((item) => {
-        const $div = $('<div>').addClass('result').html(`
-                    <a href="${item.url}"><h2>${item.title}</h2></a>
-                    <p>${item.description}</p>
-                `);
-        $resultContainer.append($div);
+    if (results.length > 0) {
+      results.forEach((item) => {
+        const resultHtml = `
+          <div class="result">
+            <a href="${item.url}"><h2>${item.title}</h2></a>
+            <p>${item.description}</p>
+          </div>`;
+        $resultContainer.append(resultHtml);
       });
     } else {
-      $resultContainer.html(`<p>No results found for the keyword.</p>`);
+      $resultContainer.html(`<p>Tidak ada hasil untuk kata kunci tersebut.</p>`);
     }
   } else {
-    $resultTitle.text('Enter search keywords.');
+    $resultTitle.text('Masukkan kata kunci pencarian.');
   }
-});
-
-function initAnimateData() {
-  const $elements = $('[data-animate]');
-  const observer = new window.IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const $el = $(entry.target);
-          const delay = $el.data('delay') || 0;
-          setTimeout(() => {
-            $el.addClass($el.data('animate'));
-            $el.css('opacity', 1);
-            observer.unobserve(entry.target);
-          }, delay);
-        }
-      });
-    },
-    {
-      threshold: 0.1,
-    }
-  );
-  $elements.each(function () {
-    observer.observe(this);
-  });
 }
+
+/**
+ * ============================================================================
+ * EVENT LISTENERS
+ * ============================================================================
+ */
+
+/**
+ * Menginisialisasi semua event listener global.
+ */
+function initEventListeners() {
+  // Event listener akan ditambahkan di sini jika ada.
+  // Fungsionalitas sidebar, search bar, dll. sudah memiliki listener sendiri dalam fungsi inisialisasinya.
+}
+
+/**
+ * Menunggu DOM siap sebelum menjalankan skrip utama.
+ */
+$(document).ready(main);
