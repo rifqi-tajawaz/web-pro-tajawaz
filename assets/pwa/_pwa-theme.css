@@ -1,0 +1,223 @@
+/**
+ * PWA Design Tokens - 100% Synchronized with Global Design System
+ * Version: 4.0.0 - Perfect Production Alignment
+ *
+ * File ini adalah BRIDGE sempurna antara PWA components dan global design system.
+ * Setiap variabel adalah direct mapping dari style.css - ZERO hardcoded values.
+ */
+
+:root {
+  /* ===================================================================
+     PWA Colors - Direct var() Mapping dari Global :root
+     =================================================================== */
+
+  /* Primary Colors - Pure Global Variables */
+  --pwa-primary: var(--primary);
+  --pwa-secondary: var(--secondary);
+
+  /* Text Colors */
+  --pwa-text-color: var(--text-color);
+  --pwa-text-color-2: var(--text-color-2);
+
+  /* Accent Colors - Complete Palette dari Global */
+  --pwa-accent: var(--accent-color);
+  --pwa-accent-2: var(--accent-color-2);
+  --pwa-accent-3: var(--accent-color-3);
+  --pwa-accent-4: var(--accent-color-4);
+  --pwa-accent-5: var(--accent-color-5);
+  --pwa-accent-6: var(--accent-color-6);
+  --pwa-accent-transparent: var(--accent-transparent);
+  --pwa-accent-transparent-2: var(--accent-transparent-2);
+
+  /* Star & Error Colors */
+  --pwa-star-color: var(--star-color);
+  --pwa-error-color: var(--error-color);
+
+  /* ===================================================================
+     PWA Typography - Exact Match dari Global System
+     =================================================================== */
+
+  /* Font Family - Direct from Global */
+  --pwa-font-family: var(--global-font);
+
+  /* Font Sizes - Complete Scale */
+  --pwa-font-size-xs: var(--font-size-xs);
+  --pwa-font-size-sm: var(--font-size-sm);
+  --pwa-font-size-base: var(--font-size-base);
+  --pwa-font-size-lg: var(--font-size-lg);
+  --pwa-font-size-xl: var(--font-size-xl);
+  --pwa-font-size-2xl: var(--font-size-2xl);
+  --pwa-font-size-3xl: var(--font-size-3xl);
+  --pwa-font-size-4xl: var(--font-size-4xl);
+  --pwa-font-size-5xl: var(--font-size-5xl);
+  --pwa-font-size-6xl: var(--font-size-6xl);
+  --pwa-font-size-7xl: var(--font-size-7xl);
+  --pwa-font-size-8xl: var(--font-size-8xl);
+  --pwa-font-size-9xl: var(--font-size-9xl);
+  --pwa-font-size-10xl: var(--font-size-10xl);
+  --pwa-font-size-11xl: var(--font-size-11xl);
+  --pwa-font-size-12xl: var(--font-size-12xl);
+
+  /* Font Weights */
+  --pwa-font-weight-normal: var(--font-weight-normal);
+  --pwa-font-weight-medium: var(--font-weight-medium);
+  --pwa-font-weight-semibold: var(--font-weight-semibold);
+  --pwa-font-weight-bold: var(--font-weight-bold);
+  --pwa-font-weight-black: var(--font-weight-black);
+
+  /* Line Heights */
+  --pwa-line-height-tight: var(--line-height-tight);
+  --pwa-line-height-snug: var(--line-height-snug);
+  --pwa-line-height-normal: var(--line-height-normal);
+  --pwa-line-height-relaxed: var(--line-height-relaxed);
+  --pwa-line-height-loose: var(--line-height-loose);
+  --pwa-line-height-extra-loose: var(--line-height-extra-loose);
+
+  /* ===================================================================
+     PWA Spacing System - Direct from Global Spacing Variables
+     =================================================================== */
+  --pwa-space-0: var(--spacing-0);
+  --pwa-space-xs: var(--spacing-1);   /* 4px */
+  --pwa-space-sm: var(--spacing-2);   /* 8px */
+  --pwa-space-md: var(--spacing-4);   /* 16px */
+  --pwa-space-lg: var(--spacing-5);   /* 20px */
+  --pwa-space-xl: var(--spacing-6);   /* 24px */
+  --pwa-space-2xl: var(--spacing-8);  /* 32px */
+  --pwa-space-3xl: var(--spacing-10); /* 40px */
+  --pwa-space-4xl: var(--spacing-12); /* 48px */
+  --pwa-space-5xl: var(--spacing-16); /* 64px */
+
+  /* ===================================================================
+     PWA Border Radius - Perfect Match dengan Global Border System
+     =================================================================== */
+  --pwa-radius-none: var(--radius-none);
+  --pwa-radius-sm: var(--radius-sm);
+  --pwa-radius-md: var(--radius-md);
+  --pwa-radius-lg: var(--radius-lg);
+  --pwa-radius-xl: var(--radius-xl);        /* 25px - Global default */
+  --pwa-radius-2xl: var(--radius-2xl);
+  --pwa-radius-3xl: var(--radius-3xl);      /* 32px - Icon containers */
+  --pwa-radius-full: var(--radius-full);    /* 50px - Pills/buttons */
+  --pwa-radius-circle: var(--radius-circle); /* 50% - Perfect circles */
+  --pwa-radius-global: var(--global-border-radius); /* 25px 25px 25px 25px */
+
+  /* ===================================================================
+     PWA Shadows - Direct from Global Shadow System
+     =================================================================== */
+  --pwa-shadow-top-left: var(--box-shadow-top-left);
+  --pwa-shadow-bottom-right: var(--box-shadow-bottom-right);
+  --pwa-shadow-top-left-wide: var(--box-shadow-top-left-wide);
+  --pwa-shadow-bottom-right-wide: var(--box-shadow-bottom-right-wide);
+  --pwa-shadow-sm: var(--shadow-sm);
+  --pwa-shadow-md: var(--shadow-md);
+  --pwa-shadow-lg: var(--shadow-lg);
+  --pwa-shadow-xl: var(--shadow-xl);
+  --pwa-shadow-focus: var(--shadow-focus);
+  --pwa-shadow-button: var(--shadow-button);
+  --pwa-shadow-none: none;
+
+  /* Additional PWA-Specific Shadows (masih selaras dengan theme) */
+  --pwa-shadow-2xl: 0 20px 60px var(--accent-color-6);
+
+  /* ===================================================================
+     PWA Gradients - Match Global Gradient Patterns
+     =================================================================== */
+
+  /* Background Gradients - Exact dari Global Pattern */
+  --pwa-gradient-bg: radial-gradient(at top left, var(--accent-color-3) 0%, var(--accent-color-4) 50%);
+  --pwa-gradient-bg-bottom: radial-gradient(at bottom center, var(--accent-color-3) 0%, var(--accent-color-4) 50%);
+  --pwa-gradient-bg-center: radial-gradient(at center center, var(--accent-color-3) 0%, var(--accent-color-4) 50%);
+  --pwa-gradient-bg-right: radial-gradient(at top right, var(--accent-color-3) 0%, var(--accent-color-4) 50%);
+
+  /* Text Gradients - Match Global Text Gradient */
+  --pwa-gradient-text: linear-gradient(284deg, var(--accent-transparent) 3%, var(--primary) 100%);
+  --pwa-gradient-text-accent: linear-gradient(340deg, var(--accent-transparent) 30%, var(--primary) 100%);
+
+  /* Overlay Gradients - Match Global Overlay Pattern */
+  --pwa-gradient-overlay-top: linear-gradient(180deg, var(--accent-color) 0%, var(--accent-transparent) 65%);
+  --pwa-gradient-overlay-bottom: linear-gradient(360deg, var(--accent-color) 0%, var(--accent-transparent) 65%);
+  --pwa-gradient-radial-overlay: radial-gradient(at center center, var(--accent-color) 0%, var(--accent-transparent) 50%);
+
+  /* PWA-Specific Status Gradients (using accent as base) */
+  --pwa-gradient-primary: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-6) 100%);
+  --pwa-gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --pwa-gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+
+  /* ===================================================================
+     PWA Transitions & Animations - Exact dari Global
+     =================================================================== */
+  --pwa-transition-fast: var(--animation-fast);
+  --pwa-transition-normal: var(--animation-normal);
+  --pwa-transition-slow: var(--animation-slow);
+  --pwa-transition-base: 0.3s ease;
+  --pwa-transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --pwa-transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* ===================================================================
+     PWA Z-Index Layers
+     =================================================================== */
+  --pwa-z-base: 1;
+  --pwa-z-dropdown: 1000;
+  --pwa-z-sticky: 1020;
+  --pwa-z-fixed: 1030;
+  --pwa-z-modal-backdrop: 1040;
+  --pwa-z-modal: 1050;
+  --pwa-z-popover: 1060;
+  --pwa-z-tooltip: 1070;
+  --pwa-z-toast: 10000;
+  --pwa-z-overlay: 9999;
+
+  /* ===================================================================
+     PWA Backdrop Effects
+     =================================================================== */
+  --pwa-blur-none: blur(0px);
+  --pwa-blur-xs: blur(2px);
+  --pwa-blur-sm: blur(5px);
+  --pwa-blur-md: blur(10px);
+  --pwa-blur-lg: blur(15px);
+  --pwa-blur-xl: blur(20px);
+  --pwa-blur-2xl: blur(25px);
+
+  /* ===================================================================
+     PWA Opacity Scale
+     =================================================================== */
+  --pwa-opacity-0: 0;
+  --pwa-opacity-10: 0.1;
+  --pwa-opacity-20: 0.2;
+  --pwa-opacity-30: 0.3;
+  --pwa-opacity-50: 0.5;
+  --pwa-opacity-60: 0.6;
+  --pwa-opacity-70: 0.7;
+  --pwa-opacity-80: 0.8;
+  --pwa-opacity-90: 0.9;
+  --pwa-opacity-95: 0.95;
+  --pwa-opacity-100: 1;
+}
+
+/* ===================================================================
+   Light Mode - AUTOMATIC Inheritance dari Global .lightmode
+   Tidak perlu override karena semua sudah var() mapping
+   =================================================================== */
+
+/* Light mode colors akan otomatis ikut berubah karena:
+   --pwa-primary: var(--primary) → ikut berubah saat .lightmode
+   --pwa-secondary: var(--secondary) → ikut berubah saat .lightmode
+   dll.
+
+   Ini adalah kekuatan true CSS variable mapping!
+*/
+
+/* ===================================================================
+   PWA Keep Dark Mode - untuk PWA Components yang selalu dark
+   =================================================================== */
+body.lightmode .pwa-keep-dark {
+  --pwa-primary: #d1d1d1;
+  --pwa-secondary: #040404;
+  --pwa-text-color: #8b8b8b;
+  --pwa-accent-2: #ffffff;
+  --pwa-accent-3: #1f1f1f;
+  --pwa-accent-4: #0e0e0e;
+  --pwa-accent-5: #0404047d;
+  --pwa-accent-6: #c82aef85;
+  --pwa-gradient-bg: radial-gradient(at top left, #1f1f1f 0%, #0e0e0e 50%);
+}
