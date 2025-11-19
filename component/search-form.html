@@ -1,54 +1,21 @@
-<!-- CHANGED - content replaced from components/search-form.html to keep template component content in sync -->
+<!-- ==========================================================================
+SEARCH OVERLAY
+Lapisan overlay yang muncul saat ikon pencarian diklik.
+Berisi form pencarian.
+========================================================================== -->
 <div class="search-overlay">
-  <button class="search-close" aria-label="Tutup pencarian" title="Tutup">
+  <!-- Tombol Tutup Overlay -->
+  <button aria-label="Tutup pencarian" class="search-close" title="Tutup">
     <i class="fa-solid fa-xmark"></i>
   </button>
+
+  <!-- Konten Pencarian -->
   <div class="search-content">
-    <form
-      action="search.html"
-      method="GET"
-      class="search-form animate-box animated slow animate__animated"
-      data-animate="animate__fadeInDown"
-    >
-      <input type="text" name="q" placeholder="Search..." aria-label="Kolom pencarian" />
-      <button type="submit" aria-label="Cari" title="Cari">
+    <form action="search.html" class="search-form animate-box animated slow animate__animated" data-animate="animate__fadeInDown" method="GET">
+      <input aria-label="Kolom pencarian" name="q" placeholder="Search..." type="text" />
+      <button aria-label="Cari" title="Cari" type="submit">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </form>
   </div>
 </div>
-
-<!-- SEO ADDED: meta + OG + twitter + canonical -->
-<title>Tajawaz Solutions</title>
-<meta name="description" content="Learn more about Tajawaz Solutions" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Tajawaz Solutions" />
-<meta property="og:description" content="Learn more about Tajawaz Solutions" />
-<meta property="og:url" content="https://www.tajawaz.my.id/search-form.html" />
-<meta property="og:image" content="./assets/images/logos/brand/light-mode.svg" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Tajawaz Solutions" />
-<meta name="twitter:description" content="Learn more about Tajawaz Solutions" />
-<link rel="canonical" href="https://www.tajawaz.my.id/search-form.html" />
-<!-- /SEO ADDED -->
-
-<!-- SEO ADDED: JSON-LD Organization & Website -->
-<script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "name": "Tajawaz Solutions",
-        "url": "https://www.tajawaz.my.id",
-        "logo": "/assets/images/logos/brand/light-mode.svg"
-      },
-      { "@type": "WebSite", "url": "https://www.tajawaz.my.id", "name": "Tajawaz Solutions" }
-    ]
-  }
-</script>
-<!-- /SEO ADDED -->
-
-<!-- SEO ADDED: preload css -->
-<link rel="preload" href="./assets/css/style.css" as="style" />
-<!-- /SEO ADDED -->
