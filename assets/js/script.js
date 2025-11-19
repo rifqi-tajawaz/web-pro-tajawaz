@@ -1,8 +1,8 @@
 Promise.all([
-  fetch('/component/header.html').then((res) => res.text()),
-  fetch('/component/footer.html').then((res) => res.text()),
-  fetch('/component/sidebar.html').then((res) => res.text()),
-  fetch('/component/search-form.html').then((res) => res.text()),
+  fetch('./component/header.html').then((res) => res.text()),
+  fetch('./component/footer.html').then((res) => res.text()),
+  fetch('./component/sidebar.html').then((res) => res.text()),
+  fetch('./component/search-form.html').then((res) => res.text()),
 ])
   .then(([headerHTML, footerHTML, sidebarHTML, searchHTML]) => {
     $('#header').html(headerHTML);

@@ -5,10 +5,10 @@
 
 // Load Components (Header, Footer, Sidebar, Search)
 Promise.all([
-  fetch('/components/header.html').then((e) => e.text()),
-  fetch('/components/footer.html').then((e) => e.text()),
-  fetch('/components/sidebar.html').then((e) => e.text()),
-  fetch('/components/search-form.html').then((e) => e.text()),
+  fetch('./components/header.html').then((e) => e.text()),
+  fetch('./components/footer.html').then((e) => e.text()),
+  fetch('./components/sidebar.html').then((e) => e.text()),
+  fetch('./components/search-form.html').then((e) => e.text()),
 ])
   .then(([e, t, n, s]) => {
     $('#header').html(e);
