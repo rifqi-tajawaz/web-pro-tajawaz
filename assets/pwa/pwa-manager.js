@@ -21,8 +21,8 @@ class PWAManager {
   constructor(options = {}) {
     // Configuration
     this.config = {
-      swPath: options.swPath || '/sw.js',
-      scope: options.scope || '/',
+      swPath: options.swPath || 'sw.js',
+      scope: options.scope || './',
       updateInterval: options.updateInterval || 60000, // 1 minute
       installPromptDelay: options.installPromptDelay || 3000, // 3 seconds
       installDismissExpiry: options.installDismissExpiry || 7, // 7 days
@@ -230,7 +230,7 @@ class PWAManager {
       <div class="pwa-install-banner">
         <div class="pwa-install-content">
           <div class="pwa-install-icon">
-            <img src="/assets/images/favicon/favicon-96x96.png" alt="Tajawaz" width="40" height="40">
+            <img src="assets/images/favicon/favicon-96x96.png" alt="Tajawaz" width="40" height="40">
           </div>
           <div class="pwa-install-text">
             <strong>Install Tajawaz Solutions</strong>
@@ -273,7 +273,7 @@ class PWAManager {
       const link = document.createElement('link');
       link.id = 'pwa-styles-link';
       link.rel = 'stylesheet';
-      link.href = '/assets/pwa/pwa-styles.css';
+      link.href = 'assets/pwa/pwa-styles.css';
       document.head.appendChild(link);
       this.log('PWA styles loaded');
     }
@@ -377,8 +377,11 @@ class PWAManager {
     document.body.appendChild(message);
 
     setTimeout(() => {
-      message.querySelector('.pwa-success-toast').style.animation = 'pwa-fade-out 0.4s forwards';
-      setTimeout(() => message.remove(), 400);
+      const toast = message.querySelector('.pwa-success-toast');
+      if (toast) {
+        toast.style.animation = 'pwa-fade-out 0.4s forwards';
+        setTimeout(() => message.remove(), 400);
+      }
     }, 6000);
   }
 
