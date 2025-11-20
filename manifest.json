@@ -12,25 +12,25 @@
   "dir": "ltr",
   "icons": [
     {
-      "src": "assets/images/favicon/favicon-96x96.png",
+      "src": "./assets/images/favicon/favicon-96x96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/images/favicon/web-app-manifest-192x192.png",
+      "src": "./assets/images/favicon/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/images/favicon/web-app-manifest-512x512.png",
+      "src": "./assets/images/favicon/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/images/favicon/apple-touch-icon.png",
+      "src": "./assets/images/favicon/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
@@ -38,14 +38,14 @@
   ],
   "screenshots": [
     {
-      "src": "assets/images/dummy-img-1920x900.jpg",
+      "src": "./assets/images/dummy-img-1920x900.jpg",
       "sizes": "1920x900",
       "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Tampilan Desktop Tajawaz Solutions"
     },
     {
-      "src": "assets/images/dummy-img-600x800.jpg",
+      "src": "./assets/images/dummy-img-600x800.jpg",
       "sizes": "600x800",
       "type": "image/jpeg",
       "form_factor": "narrow",
@@ -58,10 +58,10 @@
       "name": "Kenali Founder",
       "short_name": "Bio",
       "description": "Pelajari tentang founder kami",
-      "url": "bio-profile.html",
+      "url": "./bio-profile.html",
       "icons": [
         {
-          "src": "assets/images/favicon/favicon-96x96.png",
+          "src": "./assets/images/favicon/favicon-96x96.png",
           "sizes": "96x96"
         }
       ]
@@ -70,10 +70,10 @@
       "name": "Layanan Kami",
       "short_name": "Layanan",
       "description": "Jelajahi layanan kami",
-      "url": "service.html",
+      "url": "./service.html",
       "icons": [
         {
-          "src": "assets/images/favicon/favicon-96x96.png",
+          "src": "./assets/images/favicon/favicon-96x96.png",
           "sizes": "96x96"
         }
       ]
@@ -82,10 +82,10 @@
       "name": "Hubungi Kami",
       "short_name": "Kontak",
       "description": "Hubungi tim kami",
-      "url": "contact.html",
+      "url": "./contact.html",
       "icons": [
         {
-          "src": "assets/images/favicon/favicon-96x96.png",
+          "src": "./assets/images/favicon/favicon-96x96.png",
           "sizes": "96x96"
         }
       ]
@@ -94,10 +94,10 @@
       "name": "Tentang Kami",
       "short_name": "About",
       "description": "Pelajari lebih lanjut tentang Tajawaz Solutions",
-      "url": "about.html",
+      "url": "./about.html",
       "icons": [
         {
-          "src": "assets/images/favicon/favicon-96x96.png",
+          "src": "./assets/images/favicon/favicon-96x96.png",
           "sizes": "96x96"
         }
       ]
