@@ -4596,12 +4596,6 @@ body.lightmode .cta-service-banner::before {
 
 /* 🔧 FIX: Prevent horizontal scrollbar from Animate.css animations */
 
-/* Prevent any element from causing horizontal overflow */
-/* Exception: video, img, iframe elements that need special handling */
-*:not(video):not(img):not(iframe) {
-  max-width: 100%;
-}
-
 /* Specific fix for Bootstrap grid system with Animate.css */
 .row,
 .container,
