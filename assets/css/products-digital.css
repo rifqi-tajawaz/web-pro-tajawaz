@@ -1,16 +1,14 @@
-/* ============================================
-   PAGE LAYOUT - CONSISTENT SPACING
-   ============================================ */
-
-/* Override default section padding for better spacing consistency */
+/* ==================================
+// LAYOUT HALAMAN - PENJARAKAN KONSISTEN
+// ================================== */
 .products-digital-page .section {
   padding: var(--spacing-12) var(--spacing-5);
 }
 
-/* ============================================
-   FILTER & SEARCH CONTROLS
-   ============================================ */
 
+/* ==================================
+// KONTROL FILTER & PENCARIAN
+// ================================== */
 .products-digital-controls {
   background: linear-gradient(135deg, var(--accent-color-4) 0%, var(--accent-color-3) 100%);
   border: 1px solid var(--accent-color-3);
@@ -20,7 +18,8 @@
   box-shadow: var(--shadow-md);
 }
 
-/* Filter Section */
+
+/* ---------- Bagian Filter ---------- */
 .filter-section-product-digital {
   display: flex;
   align-items: center;
@@ -74,7 +73,8 @@
   transform: scale(0.95);
 }
 
-/* Search Section */
+
+/* ---------- Bagian Pencarian ---------- */
 .search-section-product-digital {
   width: 100%;
 }
@@ -115,11 +115,12 @@
   pointer-events: none;
 }
 
-.search-wrapper-product-digital input:focus + i {
+.search-wrapper-product-digital input:focus+i {
   color: var(--accent-color);
 }
 
-/* Results Info */
+
+/* ---------- Info Hasil ---------- */
 .results-info-product-digital {
   padding: var(--spacing-3) 0;
   margin-bottom: var(--spacing-4);
@@ -132,10 +133,10 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* ============================================
-   PRODUCTS GRID
-   ============================================ */
 
+/* ==================================
+// GRID PRODUK
+// ================================== */
 .products-digital-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -143,10 +144,10 @@
   margin-bottom: var(--spacing-8);
 }
 
-/* ============================================
-   PRODUCT CARD - CLEAN & PROFESSIONAL
-   ============================================ */
 
+/* ==================================
+// KARTU PRODUK - BERSIH & PROFESIONAL
+// ================================== */
 .product-digital-card {
   background: linear-gradient(135deg, var(--accent-color-4) 0%, var(--accent-color-3) 100%);
   border: 2px solid var(--accent-color-3);
@@ -167,7 +168,8 @@
   box-shadow: var(--shadow-xl);
 }
 
-/* Product Image */
+
+/* ---------- Gambar Produk ---------- */
 .product-digital-image {
   position: relative;
   height: 220px;
@@ -188,7 +190,8 @@
   transform: scale(1.05);
 }
 
-/* Product Badge */
+
+/* ---------- Badge Produk ---------- */
 .product-digital-badge {
   position: absolute;
   top: var(--spacing-4);
@@ -205,7 +208,8 @@
   box-shadow: var(--shadow-button);
 }
 
-/* Product Content */
+
+/* ---------- Konten Produk ---------- */
 .product-digital-content {
   padding: var(--spacing-6);
   display: flex;
@@ -214,7 +218,8 @@
   gap: var(--spacing-3);
 }
 
-/* Category Tag */
+
+/* ---------- Tag Kategori ---------- */
 .product-digital-category {
   display: inline-flex;
   align-items: center;
@@ -256,7 +261,8 @@
   content: '\f468';
 }
 
-/* Product Title */
+
+/* ---------- Judul Produk ---------- */
 .product-digital-content h4 {
   color: var(--primary);
   font-size: var(--font-size-xl);
@@ -274,7 +280,8 @@
   color: var(--accent-color);
 }
 
-/* Product Description */
+
+/* ---------- Deskripsi Produk ---------- */
 .product-digital-content p {
   color: var(--text-color);
   font-size: var(--font-size-sm);
@@ -287,7 +294,8 @@
   overflow: hidden;
 }
 
-/* Product Footer */
+
+/* ---------- Footer Produk ---------- */
 .product-digital-footer {
   margin-top: auto;
   display: flex;
@@ -297,7 +305,8 @@
   border-top: 1px solid var(--accent-color-3);
 }
 
-/* Pricing */
+
+/* ---------- Harga ---------- */
 .product-digital-price {
   display: flex;
   align-items: center;
@@ -320,16 +329,17 @@
   letter-spacing: -0.5px;
 }
 
-/* CTA Button - Using global btn styles */
+
+/* ---------- Tombol CTA (Menggunakan gaya global .btn) ---------- */
 .product-digital-content .btn {
   width: 100%;
   justify-content: center;
 }
 
-/* ============================================
-   NO RESULTS STATE
-   ============================================ */
 
+/* ==================================
+// KONDISI TANPA HASIL
+// ================================== */
 .no-results-product-digital {
   grid-column: 1 / -1;
   text-align: center;
@@ -362,10 +372,10 @@
   margin: 0;
 }
 
-/* ============================================
-   LOAD MORE BUTTON
-   ============================================ */
 
+/* ==================================
+// TOMBOL MUAT LEBIH BANYAK
+// ================================== */
 .load-more-section {
   text-align: center;
   margin-top: var(--spacing-8);
@@ -410,17 +420,15 @@
   transform: translateY(2px);
 }
 
-/* ============================================
-   LOADING SKELETON
-   ============================================ */
 
+/* ==================================
+// SKELETON LOADING
+// ================================== */
 .skeleton-loader {
-  background: linear-gradient(
-    90deg,
-    var(--accent-color-4) 25%,
-    var(--accent-color-3) 50%,
-    var(--accent-color-4) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--accent-color-4) 25%,
+      var(--accent-color-3) 50%,
+      var(--accent-color-4) 75%);
   background-size: 200% 100%;
   animation: skeleton-pulse 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);
@@ -430,6 +438,7 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
@@ -487,10 +496,10 @@
   border-radius: var(--radius-full);
 }
 
-/* ============================================
-   FADE ANIMATIONS
-   ============================================ */
 
+/* ==================================
+// ANIMASI FADE
+// ================================== */
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out forwards;
 }
@@ -500,16 +509,17 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* ============================================
-   RESPONSIVE DESIGN
-   ============================================ */
 
+/* ==================================
+// DESAIN RESPONSIF
+// ================================== */
 @media (max-width: 1199px) {
   .products-digital-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -608,10 +618,10 @@
   }
 }
 
-/* ============================================
-   ACCESSIBILITY
-   ============================================ */
 
+/* ==================================
+// AKSESIBILITAS
+// ================================== */
 .product-digital-card:focus-within {
   outline: 2px solid var(--accent-color);
   outline-offset: 4px;
@@ -624,8 +634,9 @@
   outline-offset: 2px;
 }
 
-/* Reduced motion support */
+/* Dukungan untuk reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -635,11 +646,12 @@
   }
 }
 
-/* ============================================
-   PRINT STYLES
-   ============================================ */
 
+/* ==================================
+// GAYA CETAK (PRINT)
+// ================================== */
 @media print {
+
   .products-digital-controls,
   .load-more-section {
     display: none;

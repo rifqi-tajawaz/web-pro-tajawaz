@@ -6,10 +6,10 @@
     <title>PWA Test - Tajawaz Solutions</title>
 
     <!-- Global Styles -->
-    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
 
     <!-- PWA Manifest -->
-    <link rel="manifest" href="/assets/pwa/manifest.json" />
+    <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#5f2ded" />
     <style>
       body {
@@ -253,13 +253,13 @@
       </div>
 
       <div class="btn-group">
-        <a href="index.html" class="btn">← Kembali ke Home</a>
+        <a href="../../../index.html" class="btn">← Kembali ke Home</a>
         <button onclick="location.reload()" class="btn">Refresh Test</button>
       </div>
     </div>
 
     <!-- PWA Manager -->
-    <script defer src="/assets/pwa/pwa-manager.js"></script>
+    <script defer src="pwa-manager.js"></script>
 
     <script>
       // Helper function to update status
@@ -292,7 +292,7 @@
 
             // Try to register
             navigator.serviceWorker
-              .register('/sw.js')
+              .register('../../../sw.js')
               .then(() => {
                 setStatus('sw-registered', 'success', '✅ Registered');
                 setTimeout(() => location.reload(), 1000);
