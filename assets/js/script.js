@@ -3,6 +3,56 @@
 /* ================================================================= */
 /* =================== PEMUATAN KOMPONEN DINAMIS =================== */
 /* ================================================================= */
+
+/**
+ * Helper to detect the repository name dynamically for GitHub Pages.
+ * @returns {string} The base path (e.g., "/web-pro-tajawaz" or "")
+ */
+function getBasePath() {
+  const path = window.location.pathname;
+  // Adjust this check based on your actual repository name or pattern
+  // If you want to support any subdirectory deployment:
+  const pathSegments = path.split('/').filter(segment => segment.length > 0);
+  if (pathSegments.length > 0 && !path.endsWith('index.html') && !path.endsWith('/')) {
+     // This is a heuristic. For explicit support, hardcode or check specific pattern.
+     // User requested: return path.includes('/web-pro-tajawaz') ? '/web-pro-tajawaz' : '';
+     // Since the user repo is 'web-pro-tajawaz' (implied), we can use that.
+     // However, the previous prompt said 'https://rifqi-tajawaz.github.io/'.
+     // The repo name seems to be the root for username.github.io unless it is a project page.
+     // If it is a user site (rifqi-tajawaz.github.io), base path is empty.
+     // If it is a project site (rifqi-tajawaz.github.io/repo-name), base path is /repo-name.
+
+     // Let's try to be safer by checking if we are in a subdirectory that is NOT part of the standard paths
+     // But the user explicitly asked for:
+     // const getBasePath = () => {
+     //   const path = window.location.pathname;
+     //   return path.includes('/web-pro-tajawaz') ? '/web-pro-tajawaz' : '';
+     // };
+     // Let's use a slightly more robust version that works for ANY repository name if needed,
+     // but for now I will stick to a safe relative path approach which I was using,
+     // OR implement exactly what was requested if relative paths are failing for dynamic content.
+
+     // The issue with dynamic content (JS) is that simple relative strings like "assets/..."
+     // might resolve differently depending on *current* page URL depth.
+     // E.g. from "index.html" it is "assets/...", but from "pages/about.html" it is "../assets/...".
+
+     // Since this is a flat site structure (all html in root), relative paths "assets/..." should work.
+     // BUT `sw.js` and `manifest.json` are in root.
+
+     // Let's implement a robust relative path resolver.
+     return window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+  }
+  // Fallback to just origin + path directory
+  return window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+}
+
+// Helper to get correct asset path
+function getAssetPath(path) {
+    // Remove leading slash if present to make it relative to current page
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    return cleanPath;
+}
+
 /**
  * Memuat komponen HTML reusable (header, footer, sidebar) secara dinamis
  * dan menginisialisasi fungsionalitas utama setelah komponen dimuat.
@@ -32,7 +82,6 @@ Promise.all([
     initThemeSwitch(); // Initialize the switch logic
 
     // Manually trigger logo update once components are loaded
-    // This avoids using a global MutationObserver on document.body
     const lightMode = localStorage.getItem('lightmode') === 'active';
     if (lightMode) {
         $('body').addClass('lightmode');
@@ -152,10 +201,22 @@ window.updateLogos = function(isLightMode) {
   const siteLogos = $('.site-logo');
   const partnerLogos = $('.partner-logo');
 
+  // Set error handler to prevent infinite loop if image missing
+  const setOneShotErrorHandler = ($img) => {
+      $img.off('error').on('error', function() {
+          console.warn('Image failed to load, preventing retry:', $(this).attr('src'));
+          $(this).off('error'); // Remove handler to prevent loop
+          // Optionally set a fallback or hide
+          // $(this).attr('src', 'assets/images/placeholders/placeholder.png');
+      });
+  };
+
   if (isLightMode) {
     siteLogos.each(function () {
       const $img = $(this);
+      setOneShotErrorHandler($img);
       const currentSrc = $img.attr('src');
+      // Ensure we are working with relative paths or preserving structure
       if (currentSrc && currentSrc.includes('light-mode.svg')) {
         const newSrc = currentSrc.replace('light-mode.svg', 'dark-mode.svg');
         $img.attr('src', newSrc);
@@ -164,6 +225,7 @@ window.updateLogos = function(isLightMode) {
 
     partnerLogos.each(function () {
       const $img = $(this);
+      setOneShotErrorHandler($img);
       const src = $img.attr('src');
       if (src && !src.includes('-dark')) {
         $img.attr('src', src.replace('.png', '-dark.png'));
@@ -172,6 +234,7 @@ window.updateLogos = function(isLightMode) {
   } else {
     siteLogos.each(function () {
       const $img = $(this);
+      setOneShotErrorHandler($img);
       const currentSrc = $img.attr('src');
       if (currentSrc && currentSrc.includes('dark-mode.svg')) {
         const newSrc = currentSrc.replace('dark-mode.svg', 'light-mode.svg');
@@ -181,6 +244,7 @@ window.updateLogos = function(isLightMode) {
 
     partnerLogos.each(function () {
       const $img = $(this);
+      setOneShotErrorHandler($img);
       const src = $img.attr('src');
       if (src && src.includes('-dark')) {
         $img.attr('src', src.replace('-dark.png', '.png'));

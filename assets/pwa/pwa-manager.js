@@ -226,6 +226,15 @@ class PWAManager {
   createInstallBanner() {
     const banner = document.createElement('div');
     banner.id = 'pwa-install-banner';
+
+    // Calculate correct relative path
+    const getAssetPath = (path) => {
+        // Since pwa-manager is loaded from assets/pwa/, relative paths should be adjusted or relative to root if we are in root
+        // But wait, pwa-manager runs in the context of the page (index.html), so 'assets/...' is correct relative to index.html
+        // However, let's use a safer relative approach if we are in a subfolder
+        return path;
+    };
+
     banner.innerHTML = `
       <div class="pwa-install-banner">
         <div class="pwa-install-content">

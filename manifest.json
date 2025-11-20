@@ -102,30 +102,5 @@
         }
       ]
     }
-  ],
-  "share_target": {
-    "action": "share",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "media",
-          "accept": ["image/*", "video/*", "audio/*", "application/pdf"]
-        }
-      ]
-    }
-  },
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
-  "launch_handler": {
-    "client_mode": ["navigate-existing", "auto"]
-  }
+  ]
 }
