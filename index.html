@@ -1,15 +1,70 @@
 <!DOCTYPE html>
 <html lang="id">
   <head>
+    <!-- ================================================================= -->
+    <!-- ========================= META TAGS ============================= -->
+    <!-- ================================================================= -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ================================================================= -->
+    <!-- =========================== SEO ================================= -->
+    <!-- ================================================================= -->
     <title>Tajawaz Solutions | The Art Of Exceeding Value</title>
-    <link rel="stylesheet" href="assets/css/style.css" />
-    
-    <!-- Favicon & PWA Icons -->
+    <meta
+      name="description"
+      content="Ekosistem bisnis lengkap Indonesia: mentorship praktis, tools bisnis, peluang kemitraan &amp; komunitas entrepreneur. Raih kebebasan finansial dari berbagai latar belakang. Mulai hari ini!"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tajawaz Solutions | The Art Of Exceeding Value" />
+    <meta
+      property="og:description"
+      content="Ekosistem bisnis lengkap Indonesia: mentorship praktis, tools bisnis, peluang kemitraan &amp; komunitas entrepreneur. Raih kebebasan finansial dari berbagai latar belakang. Mulai hari ini!"
+    />
+    <meta property="og:url" content="https://www.tajawaz.my.id/" />
+    <meta property="og:image" content="assets/images/logos/brand/light-mode.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tajawaz Solutions | The Art Of Exceeding Value" />
+    <meta
+      name="twitter:description"
+      content="Ekosistem bisnis lengkap Indonesia: mentorship praktis, tools bisnis, peluang kemitraan &amp; komunitas entrepreneur. Raih kebebasan finansial dari berbagai latar belakang. Mulai hari ini!"
+    />
+    <link rel="canonical" href="https://www.tajawaz.my.id/" />
+
+    <!-- ================================================================= -->
+    <!-- ========================== JSON-LD ============================== -->
+    <!-- ================================================================= -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "name": "Tajawaz Solutions",
+            "url": "https://www.tajawaz.my.id",
+            "logo": "assets/images/logos/brand/light-mode.svg"
+          },
+          {
+            "@type": "WebSite",
+            "url": "https://www.tajawaz.my.id",
+            "name": "Tajawaz Solutions"
+          }
+        ]
+      }
+    </script>
+
+    <!-- ================================================================= -->
+    <!-- ======================= FAVICON & PWA =========================== -->
+    <!-- ================================================================= -->
+    <link rel="manifest" href="assets/pwa/manifest.json" />
     <link rel="icon" type="image/svg+xml" href="assets/images/favicon/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="assets/images/favicon/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="96x96" href="assets/images/favicon/favicon-96x96.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="assets/images/favicon/favicon-96x96.png"
+    />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -18,82 +73,58 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Tajawaz" />
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="assets/pwa/manifest.json" />
-    
-    <!-- Theme Color for Mobile Browsers -->
     <meta name="theme-color" content="#5f2ded" />
     <meta name="msapplication-TileColor" content="#5f2ded" />
-    <meta name="msapplication-TileImage" content="assets/images/favicon/web-app-manifest-192x192.png" />
+    <meta
+      name="msapplication-TileImage"
+      content="assets/images/favicon/web-app-manifest-192x192.png"
+    />
 
-<!-- SEO ADDED: meta + OG + twitter + canonical -->
-<title>Tajawaz Solutions | The Art Of Exceeding Value</title>
-<meta name="description" content="Ekosistem bisnis lengkap Indonesia: mentorship praktis, tools bisnis, peluang kemitraan &amp; komunitas entrepreneur. Raih kebebasan finansial dari berbagai latar belakang. Mulai hari ini!" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Tajawaz Solutions | The Art Of Exceeding Value" />
-<meta property="og:description" content="Ekosistem bisnis lengkap Indonesia: mentorship praktis, tools bisnis, peluang kemitraan &amp; komunitas entrepreneur. Raih kebebasan finansial dari berbagai latar belakang. Mulai hari ini!" />
-<meta property="og:url" content="https://www.tajawaz.my.id/" />
-<meta property="og:image" content="assets/images/logos/brand/light-mode.svg" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Tajawaz Solutions | The Art Of Exceeding Value" />
-<meta name="twitter:description" content="Ekosistem bisnis lengkap Indonesia: mentorship praktis, tools bisnis, peluang kemitraan &amp; komunitas entrepreneur. Raih kebebasan finansial dari berbagai latar belakang. Mulai hari ini!" />
-<link rel="canonical" href="https://www.tajawaz.my.id/" />
-<!-- /SEO ADDED -->
+    <!-- ================================================================= -->
+    <!-- ========================== STYLESHEET =========================== -->
+    <!-- ================================================================= -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="preload" href="assets/css/style.css" as="style" />
 
-
-<!-- SEO ADDED: JSON-LD Organization & Website -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {"@type":"Organization","name":"Tajawaz Solutions","url":"https://www.tajawaz.my.id","logo":"assets/images/logos/brand/light-mode.svg"},
-    {"@type":"WebSite","url":"https://www.tajawaz.my.id","name":"Tajawaz Solutions"}
-  ]
-}
-</script>
-<!-- /SEO ADDED -->
-
-<!-- SEO ADDED: preload css -->
-<link rel="preload" href="assets/css/style.css" as="style">
-<!-- /SEO ADDED -->
-
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9RN86C26LP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-9RN86C26LP');
-</script>
-
-</head>
+    <!-- ================================================================= -->
+    <!-- ======================= GOOGLE TAGS ============================= -->
+    <!-- ================================================================= -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RN86C26LP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-9RN86C26LP');
+    </script>
+  </head>
   <body>
-    <!-- Section Header -->
+    <!-- ================================================================= -->
+    <!-- ========================== HEADER =============================== -->
+    <!-- ================================================================= -->
     <header>
-      <!-- Section Navbar -->
       <div id="header"></div>
     </header>
 
-    <!-- Section Content Edit -->
+    <!-- ================================================================= -->
+    <!-- ===================== SIDEBAR & SEARCH ========================== -->
+    <!-- ================================================================= -->
     <aside>
       <div id="edit-sidebar"></div>
     </aside>
-
-    <!-- Section Search -->
     <div id="search-form-container"></div>
-
-    <!-- Section Sidebar -->
     <aside>
       <div id="sidebar"></div>
     </aside>
 
-    <!-- Section Main Content-->
+    <!-- ================================================================= -->
+    <!-- ======================== MAIN CONTENT =========================== -->
+    <!-- ================================================================= -->
     <main>
-<main>
-      <!-- Section Banner -->
+      <!-- ================================================================= -->
+      <!-- ========================== BANNER =============================== -->
+      <!-- ================================================================= -->
       <div class="section-banner">
         <div
           class="banner-video-container keep-dark animate-box animated animate__animated"
@@ -181,7 +212,9 @@
         </div>
       </div>
 
-      <!-- Section Expertise -->
+      <!-- ================================================================= -->
+      <!-- ======================== EXPERTISE ============================ -->
+      <!-- ================================================================= -->
       <div class="section">
         <div class="hero-container">
           <div class="d-flex flex-column flex-xl-row gspace-5">
@@ -274,7 +307,9 @@
         </div>
       </div>
 
-      <!-- Section Modal Video -->
+      <!-- ================================================================= -->
+      <!-- ======================== MODAL VIDEO ========================== -->
+      <!-- ================================================================= -->
       <div class="section p-0">
         <div id="modal-overlay" class="modal-overlay">
           <span class="my-close"><i class="fa-solid fa-xmark"></i></span>
@@ -284,7 +319,9 @@
         </div>
       </div>
 
-      <!-- Section Partner -->
+      <!-- ================================================================= -->
+      <!-- ========================== PARTNER ============================== -->
+      <!-- ================================================================= -->
       <div class="section-partner">
         <div class="hero-container">
           <div
@@ -505,7 +542,9 @@
         </div>
       </div>
 
-      <!-- Section Why Choose Us -->
+      <!-- ================================================================= -->
+      <!-- ====================== WHY CHOOSE US ========================== -->
+      <!-- ================================================================= -->
       <div class="section">
         <div class="hero-container">
           <div class="d-flex flex-column flex-xl-row gspace-5">
@@ -665,7 +704,9 @@
         </div>
       </div>
 
-      <!-- Section Guide -->
+      <!-- ================================================================= -->
+      <!-- =========================== GUIDE ============================= -->
+      <!-- ================================================================= -->
       <div class="section-guide">
         <div class="guide-banner">
           <div class="hero-container">
@@ -696,7 +737,9 @@
         </div>
       </div>
 
-      <!-- Section Service -->
+      <!-- ================================================================= -->
+      <!-- ========================== SERVICE ============================ -->
+      <!-- ================================================================= -->
       <div class="section">
         <div class="hero-container">
           <div class="d-flex flex-column justify-content-center text-center gspace-5">
@@ -958,7 +1001,9 @@
         </div>
       </div>
 
-      <!-- Section Case Studies -->
+      <!-- ================================================================= -->
+      <!-- ====================== CASE STUDIES =========================== -->
+      <!-- ================================================================= -->
       <div class="section p-0">
         <div class="hero-container">
           <div class="case-studies-layout">
@@ -1118,7 +1163,6 @@
                       </p>
                     </div>
                   </div>
-
                   <div
                     class="card case-studies-content startup-branding animate-box animated animate__animated"
                     data-animate="animate__fadeInUp"
@@ -1166,7 +1210,9 @@
         </div>
       </div>
 
-      <!-- Section Testimonial -->
+      <!-- ================================================================= -->
+      <!-- ======================== TESTIMONIAL ========================== -->
+      <!-- ================================================================= -->
       <div class="section">
         <div class="hero-container">
           <div class="d-flex flex-column gspace-5">
@@ -1541,7 +1587,9 @@
         </div>
       </div>
 
-      <!-- Section CTA -->
+      <!-- ================================================================= -->
+      <!-- ============================ CTA ============================== -->
+      <!-- ================================================================= -->
       <div class="section">
         <div class="hero-container">
           <div class="d-flex flex-column justify-content-center text-center gspace-5">
@@ -1576,14 +1624,17 @@
         </div>
       </div>
     </main>
-</main>
-</main>
 
-    <!-- Section Footer -->
+    <!-- ================================================================= -->
+    <!-- =========================== FOOTER ============================== -->
+    <!-- ================================================================= -->
     <footer>
       <div id="footer"></div>
     </footer>
 
+    <!-- ================================================================= -->
+    <!-- =========================== SCRIPTS ============================= -->
+    <!-- ================================================================= -->
     <script src="assets/js/vendor/jquery.min.js"></script>
     <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
     <script src="assets/js/vendor/swiper-bundle.min.js"></script>
@@ -1592,8 +1643,6 @@
     <script src="assets/js/submit-form.js"></script>
     <script src="assets/js/vendor/isotope.pkgd.min.js"></script>
     <script src="assets/js/video_embedded.js"></script>
-    
-    <!-- PWA Manager - Load deferred for better performance -->
     <script defer src="assets/pwa/pwa-manager.js"></script>
   </body>
 </html>

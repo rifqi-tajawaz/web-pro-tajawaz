@@ -1,3 +1,12 @@
+'use strict';
+
+/* ================================================================= */
+/* =================== PEMUATAN KOMPONEN DINAMIS =================== */
+/* ================================================================= */
+/**
+ * Memuat komponen HTML reusable (header, footer, sidebar) secara dinamis
+ * dan menginisialisasi fungsionalitas utama setelah komponen dimuat.
+ */
 Promise.all([
   fetch('component/header.html').then((res) => res.text()),
   fetch('component/footer.html').then((res) => res.text()),
@@ -12,9 +21,8 @@ Promise.all([
     $('#search-form-container').html(searchHTML);
   })
   .then(() => {
-    // Initialize Bootstrap dropdowns after header is loaded
+    // Inisialisasi semua fungsi setelah komponen dimuat
     initBootstrapDropdowns();
-    
     initBannerVideo();
     initNavLink();
     initSidebar();
@@ -23,7 +31,8 @@ Promise.all([
     initCounter();
     initThemeSwitch();
     initSearchBar();
-    // Only init if functions exist (optional for pages without forms)
+
+    // Inisialisasi opsional untuk form (hanya jika ada)
     if (typeof initSubmitContact === 'function') {
       initSubmitContact();
     }
@@ -33,12 +42,25 @@ Promise.all([
     initAnimateData();
   });
 
+/* ================================================================= */
+/* ======================== VIDEO BANNER YOUTUBE ======================= */
+/* ================================================================= */
+/**
+ * Menginisialisasi dan mengelola pemutar video YouTube untuk banner di latar belakang.
+ * Fungsi ini menangani pemuatan API, pembuatan pemutar, penyesuaian ukuran,
+ * dan pemutaran ulang otomatis.
+ */
 function initBannerVideo() {
-  var player;
+  let player;
 
-  var $tag = $('<script>', { src: 'https://www.youtube.com/iframe_api' });
+  const $tag = $('<script>', {
+    src: 'https://www.youtube.com/iframe_api',
+  });
   $('script').first().before($tag);
 
+  /**
+   * Fungsi callback yang dieksekusi saat YouTube IFrame API siap.
+   */
   window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player('banner-video-background', {
       videoId: 'P68V3iH4TeE',
@@ -63,24 +85,33 @@ function initBannerVideo() {
     });
   };
 
+  /**
+   * @param {YT.PlayerEvent} event - Event yang dipicu saat pemutar siap.
+   */
   function onPlayerReady(event) {
     event.target.playVideo();
     setYoutubeSize();
     $(window).on('resize', setYoutubeSize);
   }
 
+  /**
+   * @param {YT.OnStateChangeEvent} event - Event yang dipicu saat status pemutar berubah.
+   */
   function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.ENDED) {
       player.playVideo();
     }
   }
 
+  /**
+   * Menyesuaikan ukuran iframe YouTube agar responsif (aspect-ratio 16:9).
+   */
   function setYoutubeSize() {
-    var $container = $('.banner-video-container');
-    var containerWidth = $container.outerWidth();
-    var containerHeight = $container.outerHeight();
-    var aspectRatio = 16 / 9;
-    var newWidth, newHeight;
+    const $container = $('.banner-video-container');
+    const containerWidth = $container.outerWidth();
+    const containerHeight = $container.outerHeight();
+    const aspectRatio = 16 / 9;
+    let newWidth, newHeight;
 
     if (containerWidth / containerHeight > aspectRatio) {
       newWidth = containerWidth;
@@ -91,30 +122,26 @@ function initBannerVideo() {
     }
 
     if (player && player.getIframe) {
-      var $iframe = $(player.getIframe());
+      const $iframe = $(player.getIframe());
       $iframe.width(newWidth).height(newHeight);
     }
   }
-
-  function handleYouTubeErrors() {
-    window.addEventListener('message', function (event) {
-      if (event.origin !== 'https://www.youtube.com') return;
-
-      try {
-        var data = JSON.parse(event.data);
-      } catch (e) {}
-    });
-  }
 }
 
+/* ================================================================= */
+/* ======================== PENGALIH TEMA ========================== */
+/* ================================================================= */
+/**
+ * Mengelola fungsionalitas peralihan tema (light/dark mode),
+ * menyimpan preferensi pengguna di localStorage, dan memperbarui logo
+ * serta ikon sesuai tema yang aktif.
+ */
 function initThemeSwitch() {
-  let lightMode = false;
+  let lightMode = localStorage.getItem('lightmode') === 'active';
 
-  if (localStorage.getItem('lightmode') === 'active') {
-    lightMode = true;
-    $('body').addClass('lightmode');
-  }
-
+  /**
+   * Memperbarui logo situs dan logo mitra berdasarkan tema yang aktif.
+   */
   const updateLogos = () => {
     const siteLogos = $('.site-logo');
     const partnerLogos = $('.partner-logo');
@@ -126,7 +153,6 @@ function initThemeSwitch() {
       siteLogos.each(function () {
         const $img = $(this);
         const currentSrc = $img.attr('src');
-        // Replace light-mode.svg with dark-mode.svg regardless of path
         const newSrc = currentSrc.replace('light-mode.svg', 'dark-mode.svg');
         $img.attr('src', newSrc);
       });
@@ -145,7 +171,6 @@ function initThemeSwitch() {
       siteLogos.each(function () {
         const $img = $(this);
         const currentSrc = $img.attr('src');
-        // Replace dark-mode.svg with light-mode.svg regardless of path
         const newSrc = currentSrc.replace('dark-mode.svg', 'light-mode.svg');
         $img.attr('src', newSrc);
       });
@@ -172,15 +197,19 @@ function initThemeSwitch() {
   $('#themeSwitch').on('click', function () {
     lightMode = !lightMode;
     updateLogos();
-
     const iconClass = lightMode ? 'fa-sun' : 'fa-moon';
     $('#themeIcon').removeClass('fa-sun fa-moon').addClass(iconClass);
   });
 }
 
+/* ================================================================= */
+/* ====================== DROPDOWN BOOTSTRAP ======================= */
+/* ================================================================= */
+/**
+ * Menginisialisasi semua komponen dropdown Bootstrap di dalam navbar.
+ */
 function initBootstrapDropdowns() {
-  // Initialize Bootstrap dropdowns for navbar
-  var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+  const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
   if (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
     dropdownElementList.map(function (dropdownToggleEl) {
       return new bootstrap.Dropdown(dropdownToggleEl);
@@ -188,24 +217,29 @@ function initBootstrapDropdowns() {
   }
 }
 
-
-$(document).ready(function () {
-  initThemeSwitch();
-});
-
+/* ================================================================= */
+/* ======================== PENGHITUNG ANGKA ======================= */
+/* ================================================================= */
+/**
+ * Menginisialisasi penghitung angka yang aktif saat elemen masuk ke viewport.
+ * Angka akan beranimasi dari 0 hingga ke nilai target.
+ */
 function initCounter() {
-  var $counters = $('.counter');
+  const $counters = $('.counter');
 
+  /**
+   * @param {jQuery} $counter - Elemen jQuery dari penghitung yang akan diupdate.
+   */
   function updateCount($counter) {
-    var target = +$counter.data('target');
-    var count = +$counter.text().replace('+', '');
-    var duration = 2000;
-    var steps = 60;
-    var increment = Math.max(1, Math.ceil(target / steps));
-    var delay = Math.floor(duration / (target / increment));
+    const target = +$counter.data('target');
+    const count = +$counter.text().replace('+', '');
+    const duration = 2000;
+    const steps = 60;
+    const increment = Math.max(1, Math.ceil(target / steps));
+    const delay = Math.floor(duration / (target / increment));
 
     if (count < target) {
-      var nextCount = Math.min(target, count + increment);
+      const nextCount = Math.min(target, count + increment);
       $counter.text(nextCount);
       setTimeout(function () {
         updateCount($counter);
@@ -215,11 +249,11 @@ function initCounter() {
     }
   }
 
-  var observer = new IntersectionObserver(
+  const observer = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          var $counter = $(entry.target);
+          const $counter = $(entry.target);
           updateCount($counter);
           observer.unobserve(entry.target);
         }
@@ -235,6 +269,12 @@ function initCounter() {
   });
 }
 
+/* ================================================================= */
+/* ================== LINK NAVIGASI AKTIF ================== */
+/* ================================================================= */
+/**
+ * Memberikan kelas 'active' pada link navigasi yang sesuai dengan URL halaman saat ini.
+ */
 function initNavLink() {
   const currentUrl = window.location.href;
   $('.navbar-nav .nav-link').each(function () {
@@ -249,29 +289,12 @@ function initNavLink() {
   });
 }
 
-$(function () {
-  const elements = document.querySelectorAll('[data-animate]');
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const delay = entry.target.getAttribute('data-delay') || 0;
-          setTimeout(() => {
-            entry.target.classList.add(entry.target.getAttribute('data-animate'));
-            entry.target.style.opacity = 1;
-
-            observer.unobserve(entry.target);
-          }, delay);
-        }
-      });
-    },
-    {
-      threshold: 0.1,
-    }
-  );
-  elements.forEach((el) => observer.observe(el));
-});
-
+/* ================================================================= */
+/* ======================== SIDEBAR UTAMA ========================== */
+/* ================================================================= */
+/**
+ * Mengelola fungsionalitas buka/tutup untuk sidebar utama (navigasi mobile).
+ */
 function initSidebar() {
   const $menuBtn = $('.nav-btn');
   const $closeBtn = $('.close-btn');
@@ -300,6 +323,12 @@ function initSidebar() {
   });
 }
 
+/* ================================================================= */
+/* ======================== SIDEBAR EDIT =========================== */
+/* ================================================================= */
+/**
+ * Mengelola fungsionalitas buka/tutup untuk sidebar sekunder (konten edit).
+ */
 function initEditSidebar() {
   const $contentBtn = $('.content-edit');
   const $closeBtn = $('.close-btn-second');
@@ -321,6 +350,12 @@ function initEditSidebar() {
   });
 }
 
+/* ================================================================= */
+/* ===================== DROPDOWN SIDEBAR ====================== */
+/* ================================================================= */
+/**
+ * Mengelola fungsionalitas dropdown (accordion) di dalam sidebar.
+ */
 function initSidebarDropdown() {
   const $dropdownButtons = $('.sidebar-dropdown-btn');
 
@@ -328,14 +363,18 @@ function initSidebarDropdown() {
     $(this).on('click', function () {
       const $dropdownMenu = $(this).parent().next('.sidebar-dropdown-menu');
       const isOpen = $dropdownMenu.hasClass('active');
-
       $('.sidebar-dropdown-menu').not($dropdownMenu).removeClass('active');
-
       $dropdownMenu.toggleClass('active', !isOpen);
     });
   });
 }
 
+/* ================================================================= */
+/* ======================== KOTAK PENCARIAN ======================== */
+/* ================================================================= */
+/**
+ * Mengelola fungsionalitas buka/tutup untuk overlay kotak pencarian.
+ */
 function initSearchBar() {
   const $searchBtn = $('.search-btn');
   const $overlay = $('.search-overlay');
@@ -345,16 +384,10 @@ function initSearchBar() {
 
   $searchBtn.on('click', function () {
     $overlay.addClass('active');
-    setTimeout(() => {
-      $overlay.addClass('active');
-    }, 200);
   });
 
   $closeBtn.on('click', function () {
     $overlay.removeClass('active');
-    setTimeout(() => {
-      $overlay.removeClass('active');
-    }, 200);
   });
 
   $overlay.on('click', function (e) {
@@ -364,6 +397,13 @@ function initSearchBar() {
   });
 }
 
+/* ================================================================= */
+/* ===================== LOGIKA PENCARIAN ====================== */
+/* ================================================================= */
+/**
+ * Menginisialisasi fungsionalitas pencarian di sisi klien.
+ * Mengambil kata kunci dari parameter URL, memfilter data, dan menampilkan hasil.
+ */
 $(document).ready(function () {
   const data = [
     {
@@ -459,7 +499,7 @@ $(document).ready(function () {
   const $resultTitle = $('#result-title');
 
   if (keyword) {
-    $resultTitle.text(`Search Result for "${keyword}" Digital Marketing Agency`);
+    $resultTitle.text(`Search Result for "${keyword}"`);
 
     const result = data.filter(
       (item) =>
@@ -470,19 +510,26 @@ $(document).ready(function () {
     if (result.length > 0) {
       result.forEach((item) => {
         const $div = $('<div>').addClass('result').html(`
-                    <a href="${item.url}"><h2>${item.title}</h2></a>
-                    <p>${item.description}</p>
-                `);
+          <a href="${item.url}"><h2>${item.title}</h2></a>
+          <p>${item.description}</p>
+        `);
         $resultContainer.append($div);
       });
     } else {
-      $resultContainer.html(`<p>No results found for the keyword.</p>`);
+      $resultContainer.html(`<p>No results found for "${keyword}"</p>`);
     }
   } else {
-    $resultTitle.text('Enter search keywords.');
+    $resultTitle.text('Enter search keywords to see results.');
   }
 });
 
+/* ================================================================= */
+/* =================== ANIMASI SAAT SCROLL =================== */
+/* ================================================================= */
+/**
+ * Menginisialisasi animasi elemen saat masuk ke viewport menggunakan Intersection Observer.
+ * Elemen dengan atribut 'data-animate' akan diberi kelas animasi.
+ */
 function initAnimateData() {
   const $elements = $('[data-animate]');
   const observer = new window.IntersectionObserver(
