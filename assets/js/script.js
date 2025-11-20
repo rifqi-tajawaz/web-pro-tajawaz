@@ -430,7 +430,7 @@ $(document).ready(function () {
       title: 'Error 404',
       description:
         "404 Oops! Page Not Found We couldn't find the page you're looking for. It might have been removed, renamed, or never existed. Back to Home",
-      url: '/errors/404.html',
+      url: 'errors/404.html',
     },
     {
       title: 'Blog',
