@@ -30,7 +30,7 @@
 
 const CACHE_VERSION = 'v4.0.0';
 const CACHE_NAME = `tajawaz-${CACHE_VERSION}`;
-const OFFLINE_PAGE = 'assets/pwa/offline.html';
+const OFFLINE_PAGE = './assets/pwa/offline.html';
 
 // Maximum cache size (in bytes) - 50MB
 const MAX_CACHE_SIZE = 50 * 1024 * 1024;
@@ -39,14 +39,18 @@ const MAX_CACHE_SIZE = 50 * 1024 * 1024;
 const CACHE_EXPIRATION = 7 * 24 * 60 * 60 * 1000;
 
 // Critical assets to precache during install
+// NOTE: Using relative paths for Subdirectory support
 const PRECACHE_ASSETS = [
-  'assets/pwa/offline.html',
-  'assets/images/favicon/favicon.ico',
-  'assets/images/favicon/favicon.svg',
-  'assets/images/favicon/favicon-96x96.png',
-  'assets/images/favicon/web-app-manifest-192x192.png',
-  'assets/images/favicon/web-app-manifest-512x512.png',
-  'assets/images/favicon/apple-touch-icon.png',
+  './assets/pwa/offline.html',
+  './assets/images/favicon/favicon.ico',
+  './assets/images/favicon/favicon.svg',
+  './assets/images/favicon/favicon-96x96.png',
+  './assets/images/favicon/web-app-manifest-192x192.png',
+  './assets/images/favicon/web-app-manifest-512x512.png',
+  './assets/images/favicon/apple-touch-icon.png',
+  './assets/css/style.css',
+  './assets/js/script.js',
+  './index.html'
 ];
 
 /**
@@ -61,9 +65,9 @@ self.addEventListener('install', (event) => {
         // Precache assets with individual error handling
         return Promise.allSettled(
           PRECACHE_ASSETS.map((url) => {
-            return cache.add(url).catch(() => {
+            return cache.add(url).catch((err) => {
               // Silently fail for individual assets
-              console.warn(`[SW] Failed to precache: ${url}`);
+              console.warn(`[SW] Failed to precache: ${url}`, err);
               return Promise.resolve();
             });
           })
