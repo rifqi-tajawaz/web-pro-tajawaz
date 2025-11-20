@@ -2320,11 +2320,8 @@ body.lightmode .card-partner {
   left: 0;
   background-color: transparent;
   z-index: 2;
-  background-image: radial-gradient(
-    at center center,
-    var(--accent-transparent) 0%,
-    var(--accent-color-4) 100%
-  );
+  background-image: none;
+  pointer-events: none;
 }
 
 .swiperPartner-overlay .spacer {
@@ -5771,9 +5768,6 @@ body.lightmode .cta-service-banner::before {
     margin-left: -20px;
     margin-right: -20px;
     width: calc(100% + 40px);
-  }
-  .swiperPartner-overlay {
-    pointer-events: none;
   }
   .copyright-container {
     flex-direction: column;
