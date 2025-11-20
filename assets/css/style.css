@@ -1303,7 +1303,7 @@ body.lightmode .keep-dark .btn-accent {
 .banner-layout-wrapper::before {
   content: '';
   position: absolute;
-  background-image: url('assets/images/backgrounds/regular-square-grids-4AL3FJ8.png');
+  background-image: url('../images/backgrounds/regular-square-grids-4AL3FJ8.png');
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -1316,7 +1316,7 @@ body.lightmode .keep-dark .btn-accent {
 }
 
 body.lightmode .banner-layout-wrapper::before {
-  background-image: url('assets/images/backgrounds/regular-square-grids-4AL3FJ8-light.png');
+  background-image: url('../images/backgrounds/regular-square-grids-4AL3FJ8-light.png');
 }
 
 .banner-layout {
@@ -1851,7 +1851,7 @@ body.lightmode .title-heading {
   background: var(--accent-color-5);
   transition: left 0.4s ease-in-out;
   z-index: 4;
-  cursor: url('assets/images/illustrations/cross-out.svg'), pointer;
+  cursor: url('../images/illustrations/cross-out.svg'), pointer;
 }
 
 .content-overlay.active {
@@ -2753,21 +2753,21 @@ body.lightmode .case-studies-content::before {
 }
 
 .case-studies-content.local-business {
-  background-image: url('assets/images/dummy-img-600x400.jpg');
+  background-image: url('../images/dummy-img-600x400.jpg');
   width: 56.2%;
 }
 
 .case-studies-content.saas-leads {
-  background-image: url('assets/images/dummy-img-600x400.jpg');
+  background-image: url('../images/dummy-img-600x400.jpg');
   width: 42%;
 }
 
 .case-studies-content.ecommerce {
-  background-image: url('assets/images/dummy-img-600x400.jpg');
+  background-image: url('../images/dummy-img-600x400.jpg');
   width: 42%;
 }
 .case-studies-content.startup-branding {
-  background-image: url('assets/images/dummy-img-600x400.jpg');
+  background-image: url('../images/dummy-img-600x400.jpg');
   width: 56.2%;
 }
 
@@ -3354,7 +3354,7 @@ body.lightmode .case-studies-content::before {
 /* ================== 35. Guide Components ================== */
 
 .guide-banner {
-  background-image: url('assets/images/dummy-img-1920x900.jpg');
+  background-image: url('../images/dummy-img-1920x900.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -4533,7 +4533,7 @@ body.lightmode .accordion-button:not(.collapsed)::after {
 /* ================== 53. CTA Service Banner Components ================== */
 
 .cta-service-banner {
-  background-image: url('assets/images/dummy-img-1920x900.jpg');
+  background-image: url('../images/dummy-img-1920x900.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -5760,6 +5760,19 @@ body.lightmode .cta-service-banner::before {
   .contact-list li {
     justify-content: center;
     font-size: var(--font-size-xs);
+  }
+  /* Fix Social Icons on Mobile */
+  .social-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  /* Fix Brand Logo Slider on Mobile */
+  .swiperPartner-container {
+    margin: 0;
+    width: 100%;
+  }
+  .swiperPartner-overlay {
+    pointer-events: none;
   }
   .copyright-container {
     flex-direction: column;
