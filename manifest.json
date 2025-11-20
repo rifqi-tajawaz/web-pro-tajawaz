@@ -104,7 +104,7 @@
     }
   ],
   "share_target": {
-    "action": "/share",
+    "action": "share",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
@@ -119,12 +119,6 @@
       ]
     }
   },
-  "protocol_handlers": [
-    {
-      "protocol": "web+tajawaz",
-      "url": "/?protocol=%s"
-    }
-  ],
   "related_applications": [],
   "prefer_related_applications": false,
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
