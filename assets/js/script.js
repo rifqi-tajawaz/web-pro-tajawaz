@@ -29,7 +29,19 @@ Promise.all([
     initEditSidebar();
     initSidebarDropdown();
     initCounter();
-    initThemeSwitch();
+    initThemeSwitch(); // Initialize the switch logic
+
+    // Manually trigger logo update once components are loaded
+    // This avoids using a global MutationObserver on document.body
+    const lightMode = localStorage.getItem('lightmode') === 'active';
+    if (lightMode) {
+        $('body').addClass('lightmode');
+        updateLogos(true);
+    } else {
+        $('body').removeClass('lightmode');
+        updateLogos(false);
+    }
+
     initSearchBar();
 
     // Inisialisasi opsional untuk form (hanya jika ada)
@@ -132,71 +144,75 @@ function initBannerVideo() {
 /* ======================== PENGALIH TEMA ========================== */
 /* ================================================================= */
 /**
+ * Memperbarui logo situs dan logo mitra berdasarkan tema yang aktif.
+ * Fungsi ini diekspos secara global agar dapat dipanggil saat inisialisasi.
+ * @param {boolean} isLightMode - Apakah mode terang aktif.
+ */
+window.updateLogos = function(isLightMode) {
+  const siteLogos = $('.site-logo');
+  const partnerLogos = $('.partner-logo');
+
+  if (isLightMode) {
+    siteLogos.each(function () {
+      const $img = $(this);
+      const currentSrc = $img.attr('src');
+      if (currentSrc && currentSrc.includes('light-mode.svg')) {
+        const newSrc = currentSrc.replace('light-mode.svg', 'dark-mode.svg');
+        $img.attr('src', newSrc);
+      }
+    });
+
+    partnerLogos.each(function () {
+      const $img = $(this);
+      const src = $img.attr('src');
+      if (src && !src.includes('-dark')) {
+        $img.attr('src', src.replace('.png', '-dark.png'));
+      }
+    });
+  } else {
+    siteLogos.each(function () {
+      const $img = $(this);
+      const currentSrc = $img.attr('src');
+      if (currentSrc && currentSrc.includes('dark-mode.svg')) {
+        const newSrc = currentSrc.replace('dark-mode.svg', 'light-mode.svg');
+        $img.attr('src', newSrc);
+      }
+    });
+
+    partnerLogos.each(function () {
+      const $img = $(this);
+      const src = $img.attr('src');
+      if (src && src.includes('-dark')) {
+        $img.attr('src', src.replace('-dark.png', '.png'));
+      }
+    });
+  }
+};
+
+/**
  * Mengelola fungsionalitas peralihan tema (light/dark mode),
- * menyimpan preferensi pengguna di localStorage, dan memperbarui logo
- * serta ikon sesuai tema yang aktif.
+ * menyimpan preferensi pengguna di localStorage.
  */
 function initThemeSwitch() {
   let lightMode = localStorage.getItem('lightmode') === 'active';
 
-  /**
-   * Memperbarui logo situs dan logo mitra berdasarkan tema yang aktif.
-   */
-  const updateLogos = () => {
-    const siteLogos = $('.site-logo');
-    const partnerLogos = $('.partner-logo');
-
-    if (lightMode) {
-      $('body').addClass('lightmode');
-      localStorage.setItem('lightmode', 'active');
-
-      siteLogos.each(function () {
-        const $img = $(this);
-        const currentSrc = $img.attr('src');
-        const newSrc = currentSrc.replace('light-mode.svg', 'dark-mode.svg');
-        $img.attr('src', newSrc);
-      });
-
-      partnerLogos.each(function () {
-        const $img = $(this);
-        const src = $img.attr('src');
-        if (!src.includes('-dark')) {
-          $img.attr('src', src.replace('.png', '-dark.png'));
-        }
-      });
-    } else {
-      $('body').removeClass('lightmode');
-      localStorage.removeItem('lightmode');
-
-      siteLogos.each(function () {
-        const $img = $(this);
-        const currentSrc = $img.attr('src');
-        const newSrc = currentSrc.replace('dark-mode.svg', 'light-mode.svg');
-        $img.attr('src', newSrc);
-      });
-
-      partnerLogos.each(function () {
-        const $img = $(this);
-        const src = $img.attr('src');
-        $img.attr('src', src.replace('-dark.png', '.png'));
-      });
-    }
-  };
-
-  updateLogos();
-
-  const observer = new MutationObserver(() => {
-    updateLogos();
-  });
-
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
+  // Set initial state of icon
+  const iconClass = lightMode ? 'fa-sun' : 'fa-moon';
+  $('#themeIcon').removeClass('fa-sun fa-moon').addClass(iconClass);
 
   $('#themeSwitch').on('click', function () {
     lightMode = !lightMode;
-    updateLogos();
+
+    if (lightMode) {
+        $('body').addClass('lightmode');
+        localStorage.setItem('lightmode', 'active');
+    } else {
+        $('body').removeClass('lightmode');
+        localStorage.removeItem('lightmode');
+    }
+
+    window.updateLogos(lightMode);
+
     const iconClass = lightMode ? 'fa-sun' : 'fa-moon';
     $('#themeIcon').removeClass('fa-sun fa-moon').addClass(iconClass);
   });
