@@ -5768,8 +5768,9 @@ body.lightmode .cta-service-banner::before {
   }
   /* Fix Brand Logo Slider on Mobile */
   .swiperPartner-container {
-    margin: 0;
-    width: 100%;
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
   }
   .swiperPartner-overlay {
     pointer-events: none;
