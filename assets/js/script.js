@@ -76,7 +76,7 @@ function initBannerVideo() {
         disablekb: 1,
         modestbranding: 1,
         iv_load_policy: 3,
-        origin: window.location.origin,
+        origin: window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')),
       },
       events: {
         onReady: onPlayerReady,

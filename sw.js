@@ -30,7 +30,7 @@
 
 const CACHE_VERSION = 'v4.0.0';
 const CACHE_NAME = `tajawaz-${CACHE_VERSION}`;
-const OFFLINE_PAGE = '/assets/pwa/offline.html';
+const OFFLINE_PAGE = 'assets/pwa/offline.html';
 
 // Maximum cache size (in bytes) - 50MB
 const MAX_CACHE_SIZE = 50 * 1024 * 1024;
@@ -40,13 +40,13 @@ const CACHE_EXPIRATION = 7 * 24 * 60 * 60 * 1000;
 
 // Critical assets to precache during install
 const PRECACHE_ASSETS = [
-  '/assets/pwa/offline.html',
-  '/assets/images/favicon/favicon.ico',
-  '/assets/images/favicon/favicon.svg',
-  '/assets/images/favicon/favicon-96x96.png',
-  '/assets/images/favicon/web-app-manifest-192x192.png',
-  '/assets/images/favicon/web-app-manifest-512x512.png',
-  '/assets/images/favicon/apple-touch-icon.png',
+  'assets/pwa/offline.html',
+  'assets/images/favicon/favicon.ico',
+  'assets/images/favicon/favicon.svg',
+  'assets/images/favicon/favicon-96x96.png',
+  'assets/images/favicon/web-app-manifest-192x192.png',
+  'assets/images/favicon/web-app-manifest-512x512.png',
+  'assets/images/favicon/apple-touch-icon.png',
 ];
 
 /**
@@ -155,7 +155,7 @@ self.addEventListener('fetch', (event) => {
    * CSS, JS, Images, Fonts
    */
   if (
-    url.pathname.includes('/assets/') ||
+    url.pathname.includes('assets/') ||
     request.url.match(/\.(css|js|jpg|jpeg|png|svg|webp|gif|woff|woff2|ttf|eot|ico)$/i)
   ) {
     event.respondWith(cacheFirst(request));
@@ -306,8 +306,8 @@ async function syncForms() {
 self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'Notifikasi baru dari Tajawaz Solutions',
-    icon: '/assets/images/favicon/web-app-manifest-192x192.png',
-    badge: '/assets/images/favicon/favicon-96x96.png',
+    icon: 'assets/images/favicon/web-app-manifest-192x192.png',
+    badge: 'assets/images/favicon/favicon-96x96.png',
     vibrate: [200, 100, 200],
     data: {
       dateOfArrival: Date.now(),
@@ -317,12 +317,12 @@ self.addEventListener('push', (event) => {
       {
         action: 'explore',
         title: 'Lihat',
-        icon: '/assets/images/favicon/favicon-96x96.png',
+        icon: 'assets/images/favicon/favicon-96x96.png',
       },
       {
         action: 'close',
         title: 'Tutup',
-        icon: '/assets/images/favicon/favicon-96x96.png',
+        icon: 'assets/images/favicon/favicon-96x96.png',
       },
     ],
     tag: 'tajawaz-notification',
@@ -342,7 +342,7 @@ self.addEventListener('notificationclick', (event) => {
 
   if (event.action === 'explore') {
     event.waitUntil(
-      clients.openWindow('/').catch(() => {
+      clients.openWindow('./').catch(() => {
         // Failed to open window
       })
     );
