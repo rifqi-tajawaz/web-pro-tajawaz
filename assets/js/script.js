@@ -17,11 +17,21 @@ Promise.all([
   fetch(`${baseUrl}component/search-form.html`).then((res) => res.text()),
 ])
   .then(([headerHTML, footerHTML, sidebarHTML, searchHTML]) => {
-    $('#header').html(headerHTML);
-    $('#footer').html(footerHTML);
-    $('#sidebar').html(sidebarHTML);
-    $('#edit-sidebar').html(sidebarHTML);
-    $('#search-form-container').html(searchHTML);
+    // Adjust paths in components based on current location
+    const adjustPaths = (html, baseUrl) => {
+      return html
+        .replace(/src="assets\//g, `src="${baseUrl}assets/`)
+        .replace(/src="\.\/assets\//g, `src="${baseUrl}assets/`)
+        .replace(/href="assets\//g, `href="${baseUrl}assets/`)
+        .replace(/href="\.\//g, `href="${baseUrl}`)
+        .replace(/action="\.\//g, `action="${baseUrl}`);
+    };
+
+    $('#header').html(adjustPaths(headerHTML, baseUrl));
+    $('#footer').html(adjustPaths(footerHTML, baseUrl));
+    $('#sidebar').html(adjustPaths(sidebarHTML, baseUrl));
+    $('#edit-sidebar').html(adjustPaths(sidebarHTML, baseUrl));
+    $('#search-form-container').html(adjustPaths(searchHTML, baseUrl));
   })
   .then(() => {
     // Initialize all functions after components are loaded
