@@ -53,9 +53,6 @@ class PWAManager {
   init() {
     this.log('Initializing PWA Manager...');
 
-    // Load PWA styles
-    this.loadPWAStyles();
-
     // Check if already installed
     this.checkInstallStatus();
 
@@ -272,20 +269,6 @@ class PWAManager {
     }, 100);
 
     return banner;
-  }
-
-  /**
-   * Load PWA styles
-   */
-  loadPWAStyles() {
-    if (!document.getElementById('pwa-styles-link')) {
-      const link = document.createElement('link');
-      link.id = 'pwa-styles-link';
-      link.rel = 'stylesheet';
-      link.href = 'assets/pwa/pwa-styles.css';
-      document.head.appendChild(link);
-      this.log('PWA styles loaded');
-    }
   }
 
   /**

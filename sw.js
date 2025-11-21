@@ -1,6 +1,6 @@
 /**
  * Service Worker for Tajawaz Solutions PWA
- * Version: 4.1.2 - Production Ready (Professional Edition)
+ * Version: 4.2.0 - Production Ready (Professional Edition)
  *
  * Strategies:
  * - HTML Navigation: Network First (Fresh content always, fallback to offline)
@@ -10,7 +10,7 @@
  * IMPORTANT: This file MUST remain in the root directory (/)
  */
 
-const CACHE_VERSION = 'v4.1.2';
+const CACHE_VERSION = 'v4.2.0';
 const CACHE_NAME = `tajawaz-${CACHE_VERSION}`;
 const OFFLINE_PAGE = './assets/pwa/offline.html';
 
@@ -18,14 +18,17 @@ const OFFLINE_PAGE = './assets/pwa/offline.html';
 const PRECACHE_ASSETS = [
   './assets/pwa/offline.html',
   './assets/css/style.css',
-  './assets/pwa/_pwa-theme.css',
-  './assets/pwa/pwa-styles.css',
   './assets/js/script.js',
   './assets/js/base-url.js',
   './assets/images/favicon/favicon.ico',
   './assets/images/favicon/favicon.svg',
   './assets/images/favicon/favicon-96x96.png',
+  './assets/images/favicon/icon-72x72.png',
+  './assets/images/favicon/icon-128x128.png',
+  './assets/images/favicon/icon-144x144.png',
+  './assets/images/favicon/icon-152x152.png',
   './assets/images/favicon/web-app-manifest-192x192.png',
+  './assets/images/favicon/icon-384x384.png',
   './assets/images/favicon/web-app-manifest-512x512.png',
   './index.html',
   './about.html',
