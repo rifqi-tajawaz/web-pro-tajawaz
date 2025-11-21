@@ -1,139 +1,94 @@
 <!DOCTYPE html>
 <html lang="id">
   <head>
+    <!-- ================================================================= -->
+    <!-- ========================= META TAGS ============================= -->
+    <!-- ================================================================= -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ================================================================= -->
+    <!-- =========================== SEO ================================= -->
+    <!-- ================================================================= -->
     <title>Error 404 - Tajawaz Solutions | Halaman Tidak Ditemukan</title>
-    <link rel="stylesheet" href="../assets/css/style.css" />
-    <link rel="shortcut icon" href="../assets/images/favicon/favicon.svg" />
     <meta
       name="description"
       content="Halaman yang Anda cari tidak ditemukan. Kembali ke beranda Tajawaz Solutions untuk melanjutkan perjalanan Anda menuju kebebasan finansial."
     />
+    <link rel="canonical" href="https://www.tajawaz.my.id/404.html" />
 
-<!-- SEO ADDED: meta + OG + twitter + canonical -->
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Error 404 - Tajawaz Solutions | Halaman Tidak Ditemukan" />
-<meta property="og:description" content="Halaman yang Anda cari tidak ditemukan. Kembali ke beranda Tajawaz Solutions untuk melanjutkan perjalanan Anda menuju kebebasan finansial." />
-<meta property="og:url" content="https://www.tajawaz.my.id/404.html" />
-<meta property="og:image" content="../assets/images/logos/brand/light-mode.svg" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Error 404 - Tajawaz Solutions | Halaman Tidak Ditemukan" />
-<meta name="twitter:description" content="Halaman yang Anda cari tidak ditemukan. Kembali ke beranda Tajawaz Solutions untuk melanjutkan perjalanan Anda menuju kebebasan finansial." />
-<link rel="canonical" href="https://www.tajawaz.my.id/404.html" />
-<!-- /SEO ADDED -->
+    <!-- ================================================================= -->
+    <!-- ======================= FAVICON & PWA =========================== -->
+    <!-- ================================================================= -->
+    <link rel="manifest" href="../manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/images/favicon/apple-touch-icon.png"
+    />
+    <meta name="theme-color" content="#5f2ded" />
 
-<!-- SEO ADDED: JSON-LD Organization & Website -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {"@type":"Organization","name":"Tajawaz Solutions","url":"https://www.tajawaz.my.id","logo":"../assets/images/logos/brand/light-mode.svg"},
-    {"@type":"WebSite","url":"https://www.tajawaz.my.id","name":"Tajawaz Solutions"}
-  ]
-}
-</script>
-<!-- /SEO ADDED -->
-
-<!-- SEO ADDED: preload css -->
-<link rel="preload" href="../assets/css/style.css" as="style">
-<!-- /SEO ADDED -->
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9RN86C26LP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-9RN86C26LP');
-</script>
-
-<style>
-  /* Error 404 specific enhancements */
-  .error-icon {
-    font-size: 80px;
-    margin-bottom: 20px;
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .layout-404 {
-    animation: fadeInUp 0.6s ease-out;
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .btn-group-error {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 30px;
-  }
-
-  @media (max-width: 768px) {
-    .btn-group-error {
-      flex-direction: column;
-      width: 100%;
-    }
+    <!-- ================================================================= -->
+    <!-- ========================== STYLESHEET =========================== -->
+    <!-- ================================================================= -->
+    <link rel="stylesheet" href="../assets/css/style.css" />
     
-    .btn-group-error .btn {
-      width: 100%;
-    }
-  }
-</style>
-
-</head>
+    <!-- ================================================================= -->
+    <!-- ======================= GOOGLE TAGS ============================= -->
+    <!-- ================================================================= -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RN86C26LP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-9RN86C26LP');
+    </script>
+  </head>
   <body>
-    <!-- Section Header -->
+    <!-- ================================================================= -->
+    <!-- ========================== HEADER =============================== -->
+    <!-- ================================================================= -->
     <header>
-      <!-- Section Navbar -->
       <div id="header"></div>
     </header>
 
-    <!-- Section Content Edit -->
+    <!-- ================================================================= -->
+    <!-- ===================== SIDEBAR & SEARCH ========================== -->
+    <!-- ================================================================= -->
     <aside>
       <div id="edit-sidebar"></div>
     </aside>
-
-    <!-- Section Search -->
     <div id="search-form-container"></div>
-
-    <!-- Section Sidebar -->
     <aside>
       <div id="sidebar"></div>
     </aside>
 
-    <!-- Section Main Content-->
+    <!-- ================================================================= -->
+    <!-- ======================== MAIN CONTENT =========================== -->
+    <!-- ================================================================= -->
     <main>
+      <!-- ================================================================= -->
+      <!-- ========================== BANNER 404 =========================== -->
+      <!-- ================================================================= -->
       <div class="section-404">
         <div class="banner-layout-404">
           <div class="layout-404">
-            <div class="error-icon">🔍</div>
             <span
               class="text-404 title-heading animate-box animated animate__animated"
               data-animate="animate__fadeInRight"
-              >404</span
             >
+              404
+            </span>
             <h3>Oops! Halaman Tidak Ditemukan</h3>
             <p>
-              Maaf, halaman yang Anda cari tidak dapat ditemukan. Halaman mungkin telah dihapus,
-              dipindahkan, atau URL yang Anda masukkan salah.
+              Kami tidak dapat menemukan halaman yang Anda cari. Mungkin telah dihapus, diganti
+              namanya, atau tidak pernah ada.
             </p>
-            <div class="btn-group-error">
+            <div>
               <a href="../index.html" class="btn btn-accent">
                 <div class="btn-title">
                   <span>Kembali ke Beranda</span>
@@ -142,31 +97,29 @@
                   <i class="fa-solid fa-arrow-right"></i>
                 </div>
               </a>
-              <a href="../contact.html" class="btn btn-accent">
-                <div class="btn-title">
-                  <span>Hubungi Kami</span>
-                </div>
-                <div class="icon-circle">
-                  <i class="fa-solid fa-envelope"></i>
-                </div>
-              </a>
             </div>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- Section Footer -->
+    <!-- ================================================================= -->
+    <!-- =========================== FOOTER ============================== -->
+    <!-- ================================================================= -->
     <footer>
       <div id="footer"></div>
     </footer>
 
+    <!-- ================================================================= -->
+    <!-- =========================== SCRIPTS ============================= -->
+    <!-- ================================================================= -->
     <script src="../assets/js/base-url.js"></script>
     <script src="../assets/vendor/js/jquery.min.js"></script>
     <script src="../assets/vendor/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/vendor/js/swiper-bundle.min.js"></script>
     <script src="../assets/js/script.js"></script>
     <script src="../assets/js/swiper-script.js"></script>
+    <script src="../assets/js/submit-form.js"></script>
     <script src="../assets/js/video_embedded.js"></script>
   </body>
 </html>
