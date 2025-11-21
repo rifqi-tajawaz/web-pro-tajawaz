@@ -1,505 +1,137 @@
+
 /**
- * TAJAWAZ SOLUTIONS - PRODUCTS CATALOG
- * Professional & iOS Safari Compatible
- * Clean implementation without complex animations
+ * Product Catalog Logic
+ * Handles rendering, filtering, and searching of digital products.
  */
 
-(function() {
-  'use strict';
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('products-digital-container');
+    const searchInput = document.getElementById('product-digital-search');
+    const filterButtons = document.querySelectorAll('.filter-btn-product-digital');
+    const resultsCount = document.getElementById('results-count-product-digital');
+    const loadMoreBtn = document.getElementById('load-more-btn-product-digital');
 
-  // Configuration
-  const CONFIG = {
-    PRODUCTS_PER_PAGE: 9,
-    DEBOUNCE_DELAY: 300,
-    FADE_DURATION: 300
-  };
+    let currentFilter = 'Semua';
+    let currentSearch = '';
+    let visibleCount = 6; // Initial number of items to show
+    const loadIncrement = 3;
 
-  // State
-  let state = {
-    currentPage: 1,
-    currentFilter: 'Semua',
-    currentSearch: '',
-    isLoading: false
-  };
-
-  // DOM Elements
-  let elements = {};
-
-  /**
-   * Initialize application
-   */
-  function init() {
-    // Wait for DOM to be ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initApp);
-    } else {
-      initApp();
-    }
-  }
-
-  /**
-   * Initialize app after DOM is ready
-   */
-  function initApp() {
-    // Cache DOM elements
-    cacheElements();
-
-    // Validate required elements
-    if (!elements.productsContainer) {
-      console.error('Products container not found');
-      return;
+    // Check if productsData is available
+    if (typeof productsData === 'undefined') {
+        console.error("productsData is not defined. Make sure products-data.js is loaded.");
+        container.innerHTML = '<p class="text-center">Gagal memuat produk. Silakan coba lagi nanti.</p>';
+        return;
     }
 
-    // Show loading skeleton
-    showLoadingSkeleton();
+    function renderProducts() {
+        // Filter data
+        let filteredData = productsData.filter(product => {
+            const matchesCategory = currentFilter === 'Semua' || product.category === currentFilter;
+            const matchesSearch = product.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                  product.description.toLowerCase().includes(currentSearch.toLowerCase());
+            return matchesCategory && matchesSearch;
+        });
 
-    // Wait for products data
-    waitForProductsData();
-  }
+        // Update results count text
+        resultsCount.textContent = `Menampilkan ${Math.min(visibleCount, filteredData.length)} dari ${filteredData.length} produk`;
 
-  /**
-   * Cache DOM elements
-   */
-  function cacheElements() {
-    elements = {
-      productsContainer: document.getElementById('products-digital-container'),
-      filterButtons: document.querySelectorAll('[data-filter]'),
-      searchInput: document.getElementById('product-digital-search'),
-      loadMoreBtn: document.getElementById('load-more-btn-product-digital'),
-      resultsCount: document.getElementById('results-count-product-digital')
-    };
-  }
+        // Slice for pagination
+        const paginatedData = filteredData.slice(0, visibleCount);
 
-  /**
-   * Wait for products data to be available
-   */
-  function waitForProductsData() {
-    let attempts = 0;
-    const maxAttempts = 50;
+        // Clear container
+        container.innerHTML = '';
 
-    const checkInterval = setInterval(function() {
-      attempts++;
+        if (paginatedData.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <div class="d-flex flex-column align-items-center gspace-2">
+                        <i class="fa-solid fa-box-open fa-3x" style="color: var(--text-color);"></i>
+                        <p>Tidak ada produk yang ditemukan.</p>
+                    </div>
+                </div>
+            `;
+            loadMoreBtn.classList.add('load-more-btn-hidden');
+            return;
+        }
 
-      // Debug logging
-      if (attempts === 1) {
-        console.log('Waiting for products data...');
-      }
+        // Render items
+        paginatedData.forEach(product => {
+            const cardHTML = `
+                <div class="card card-product-digital animate-box animated animate__fadeInUp">
+                    <div class="card-header-custom">
+                        <div class="product-icon">
+                            <i class="${product.icon}"></i>
+                        </div>
+                        <span class="product-price">${product.price}</span>
+                    </div>
+                    <h4>${product.title}</h4>
+                    <p>${product.description}</p>
+                    <a href="./contact.html" class="btn btn-accent">
+                        <div class="btn-title">
+                            <span>Beli Sekarang</span>
+                        </div>
+                        <div class="icon-circle">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                    </a>
+                </div>
+            `;
 
-      if (typeof window.productsData !== 'undefined' && Array.isArray(window.productsData)) {
-        console.log('Products data found! Total products:', window.productsData.length);
-        clearInterval(checkInterval);
-        startApp();
-      } else if (attempts >= maxAttempts) {
-        console.error('Failed to load products data after', maxAttempts, 'attempts');
-        console.error('window.productsData type:', typeof window.productsData);
-        clearInterval(checkInterval);
-        showError('Gagal memuat data produk. Silakan refresh halaman.');
-      }
-    }, 100);
-  }
+            // Create wrapper div for grid column if using bootstrap grid directly in container
+            // But here we are using css grid on the container itself, so direct children are items.
+            // Wait, the CSS uses grid-template-columns. So we just append the card directly?
+            // The CSS .products-digital-grid { display: grid ... } handles the layout.
+            // So we append the card div directly.
 
-  /**
-   * Start the application
-   */
-  function startApp() {
-    setupEventListeners();
-    renderProducts();
-  }
+            // However, standard template uses Bootstrap cols.
+            // Let's check style.css usage. The template uses .row > .col > .card.
+            // My new CSS .products-digital-grid uses standard CSS Grid.
+            // This is cleaner for "Loading More" than Bootstrap rows which need wrapping.
+            // So I will inject the card DIV directly into the container.
 
-  /**
-   * Setup all event listeners
-   */
-  function setupEventListeners() {
-    // Filter buttons
-    if (elements.filterButtons) {
-      elements.filterButtons.forEach(function(button) {
-        button.addEventListener('click', handleFilterClick);
-      });
+            container.insertAdjacentHTML('beforeend', cardHTML);
+        });
+
+        // Handle Load More Button visibility
+        if (visibleCount >= filteredData.length) {
+            loadMoreBtn.classList.add('load-more-btn-hidden');
+        } else {
+            loadMoreBtn.classList.remove('load-more-btn-hidden');
+        }
+
+        // Re-trigger animations (simple hack for existing scroll logic if needed,
+        // but here we just add the class directly so they fade in immediately or via css animation)
     }
 
-    // Search input
-    if (elements.searchInput) {
-      elements.searchInput.addEventListener('input', debounce(handleSearch, CONFIG.DEBOUNCE_DELAY));
-    }
+    // Event Listeners
 
-    // Load more button
-    if (elements.loadMoreBtn) {
-      elements.loadMoreBtn.addEventListener('click', handleLoadMore);
-    }
-  }
-
-  /**
-   * Handle filter button click
-   */
-  function handleFilterClick(e) {
-    e.preventDefault();
-
-    // Update active state
-    elements.filterButtons.forEach(function(btn) {
-      btn.classList.remove('active');
-      btn.setAttribute('aria-pressed', 'false');
+    // Filter Buttons
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all
+            filterButtons.forEach(b => b.classList.remove('active'));
+            // Add active to clicked
+            btn.classList.add('active');
+            // Update state
+            currentFilter = btn.getAttribute('data-filter');
+            visibleCount = 6; // Reset pagination
+            renderProducts();
+        });
     });
 
-    this.classList.add('active');
-    this.setAttribute('aria-pressed', 'true');
-
-    // Update state
-    state.currentFilter = this.getAttribute('data-filter');
-    state.currentPage = 1;
-
-    // Render products
-    renderProducts();
-
-    // Analytics
-    trackEvent('filter_products', { category: state.currentFilter });
-  }
-
-  /**
-   * Handle search input
-   */
-  function handleSearch(e) {
-    state.currentSearch = e.target.value.trim();
-    state.currentPage = 1;
-    renderProducts();
-
-    // Analytics
-    if (state.currentSearch) {
-      trackEvent('search_products', { term: state.currentSearch });
-    }
-  }
-
-  /**
-   * Handle load more button click
-   */
-  function handleLoadMore(e) {
-    e.preventDefault();
-
-    if (state.isLoading) return;
-
-    state.isLoading = true;
-    showLoadingButton();
-
-    setTimeout(function() {
-      state.currentPage++;
-      state.isLoading = false;
-      renderProducts();
-
-      // Analytics
-      trackEvent('load_more_products', { page: state.currentPage });
-    }, 500);
-  }
-
-  /**
-   * Show loading skeleton
-   */
-  function showLoadingSkeleton() {
-    if (!elements.productsContainer) return;
-
-    const skeletonCards = [];
-    for (let i = 0; i < 6; i++) {
-      skeletonCards.push(createSkeletonCard());
-    }
-
-    elements.productsContainer.innerHTML = skeletonCards.join('');
-
-    if (elements.resultsCount) {
-      elements.resultsCount.textContent = 'Memuat produk...';
-    }
-  }
-
-  /**
-   * Create skeleton card HTML
-   */
-  function createSkeletonCard() {
-    return `
-      <div class="skeleton-card">
-        <div class="skeleton-image skeleton-loader"></div>
-        <div class="skeleton-category skeleton-loader"></div>
-        <div class="skeleton-title skeleton-loader"></div>
-        <div class="skeleton-description skeleton-loader"></div>
-        <div class="skeleton-description skeleton-loader"></div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; gap: 1rem;">
-          <div class="skeleton-price skeleton-loader"></div>
-          <div class="skeleton-button skeleton-loader" style="flex: 1;"></div>
-        </div>
-      </div>
-    `;
-  }
-
-  /**
-   * Show loading state on button
-   */
-  function showLoadingButton() {
-    if (!elements.loadMoreBtn) return;
-
-    elements.loadMoreBtn.innerHTML = `
-      <span class="btn-title">
-        <span>Memuat...</span>
-      </span>
-      <span class="icon-circle">
-        <i class="fa-solid fa-spinner fa-spin"></i>
-      </span>
-    `;
-    elements.loadMoreBtn.disabled = true;
-  }
-
-  /**
-   * Show error message
-   */
-  function showError(message) {
-    if (!elements.productsContainer) return;
-
-    elements.productsContainer.innerHTML = `
-      <div class="no-results-product-digital animate-fade-in">
-        <i class="fa-solid fa-exclamation-triangle"></i>
-        <h4>Error</h4>
-        <p>${escapeHtml(message)}</p>
-      </div>
-    `;
-  }
-
-  /**
-   * Render products based on current state
-   */
-  function renderProducts() {
-    if (!elements.productsContainer) return;
-
-    // Validate products data
-    if (typeof window.productsData === 'undefined' || !Array.isArray(window.productsData)) {
-      console.error('Products data validation failed');
-      showError('Data produk tidak tersedia');
-      return;
-    }
-
-    console.log('Rendering products - Filter:', state.currentFilter, 'Search:', state.currentSearch);
-
-    // Get filtered products
-    const filteredProducts = getFilteredProducts();
-    console.log('Filtered products count:', filteredProducts.length);
-
-    // Calculate pagination
-    const startIndex = 0;
-    const endIndex = state.currentPage * CONFIG.PRODUCTS_PER_PAGE;
-    const productsToShow = filteredProducts.slice(startIndex, endIndex);
-    const hasMore = endIndex < filteredProducts.length;
-
-    // Update results count
-    updateResultsCount(productsToShow.length, filteredProducts.length);
-
-    // Fade out animation
-    fadeOut(elements.productsContainer, function() {
-      // Clear container
-      elements.productsContainer.innerHTML = '';
-
-      // Render products or no results
-      if (productsToShow.length === 0) {
-        renderNoResults();
-      } else {
-        renderProductCards(productsToShow);
-      }
-
-      // Update load more button
-      updateLoadMoreButton(hasMore, filteredProducts.length - endIndex);
-
-      // Fade in animation
-      fadeIn(elements.productsContainer);
+    // Search Input
+    searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value;
+        visibleCount = 6; // Reset pagination
+        renderProducts();
     });
-  }
 
-  /**
-   * Get filtered products
-   */
-  function getFilteredProducts() {
-    let filtered = window.productsData.slice();
+    // Load More
+    loadMoreBtn.addEventListener('click', () => {
+        visibleCount += loadIncrement;
+        renderProducts();
+    });
 
-    // Filter by category
-    if (state.currentFilter !== 'Semua') {
-      filtered = filtered.filter(function(product) {
-        return product.category === state.currentFilter;
-      });
-    }
-
-    // Filter by search
-    if (state.currentSearch) {
-      const searchLower = state.currentSearch.toLowerCase();
-      filtered = filtered.filter(function(product) {
-        return product.title.toLowerCase().indexOf(searchLower) !== -1 ||
-               product.description.toLowerCase().indexOf(searchLower) !== -1 ||
-               product.tags.some(function(tag) {
-                 return tag.toLowerCase().indexOf(searchLower) !== -1;
-               });
-      });
-    }
-
-    return filtered;
-  }
-
-  /**
-   * Update results count
-   */
-  function updateResultsCount(showing, total) {
-    if (!elements.resultsCount) return;
-
-    elements.resultsCount.textContent = 'Menampilkan ' + showing + ' dari ' + total + ' produk';
-  }
-
-  /**
-   * Render no results message
-   */
-  function renderNoResults() {
-    elements.productsContainer.innerHTML = `
-      <div class="no-results-product-digital animate-fade-in" data-testid="no-results-product-digital">
-        <i class="fa-solid fa-box-open"></i>
-        <h4>Tidak Ada Produk Ditemukan</h4>
-        <p>Coba ubah filter atau kata kunci pencarian</p>
-      </div>
-    `;
-  }
-
-  /**
-   * Render product cards
-   */
-  function renderProductCards(products) {
-    const cardsHtml = products.map(function(product) {
-      return createProductCard(product);
-    }).join('');
-
-    elements.productsContainer.innerHTML = cardsHtml;
-  }
-
-  /**
-   * Create product card HTML
-   */
-  function createProductCard(product) {
-    const badgeHtml = product.badge ?
-      '<span class="product-digital-badge" data-testid="product-digital-badge-' + product.id + '">' +
-      escapeHtml(product.badge) + '</span>' : '';
-
-    const originalPriceHtml = product.originalPrice ?
-      '<span class="original-price" data-testid="product-digital-original-price-' + product.id + '">' +
-      escapeHtml(product.originalPrice) + '</span>' : '';
-
-    return `
-      <div class="product-digital-card animate-fade-in"
-           data-testid="product-digital-card-${product.id}"
-           data-product-id="${product.id}">
-        ${badgeHtml}
-        <div class="product-digital-image">
-          <img
-            src="${escapeHtml(product.image)}"
-            alt="${escapeHtml(product.title)}"
-            loading="lazy"
-            width="600"
-            height="400"
-            data-testid="product-digital-image-${product.id}"
-          >
-        </div>
-        <div class="product-digital-content">
-          <div class="product-digital-category" data-category="${escapeHtml(product.category)}" data-testid="product-digital-category-${product.id}">
-            ${escapeHtml(product.category)}
-          </div>
-          <h4 data-testid="product-digital-title-${product.id}">${escapeHtml(product.title)}</h4>
-          <p data-testid="product-digital-description-${product.id}">${escapeHtml(product.description)}</p>
-          <div class="product-digital-footer">
-            <div class="product-digital-price" data-testid="product-digital-price-${product.id}">
-              ${originalPriceHtml}
-              <span class="current-price" data-testid="product-digital-current-price-${product.id}">${escapeHtml(product.price)}</span>
-            </div>
-            <a href="${escapeHtml(product.link)}"
-               class="btn btn-accent"
-               data-testid="product-digital-cta-${product.id}"
-               aria-label="Lihat detail ${escapeHtml(product.title)}">
-              <div class="btn-title">
-                <span>Lihat Detail</span>
-              </div>
-              <div class="icon-circle">
-                <i class="fa-solid fa-arrow-right"></i>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  /**
-   * Update load more button
-   */
-  function updateLoadMoreButton(hasMore, remaining) {
-    if (!elements.loadMoreBtn) return;
-
-    if (hasMore) {
-      elements.loadMoreBtn.style.display = 'inline-flex';
-      elements.loadMoreBtn.disabled = false;
-      elements.loadMoreBtn.innerHTML = `
-        <span class="btn-title">
-          <span>Tampilkan Lebih Banyak (${remaining})</span>
-        </span>
-        <span class="icon-circle">
-          <i class="fa-solid fa-arrow-down"></i>
-        </span>
-      `;
-    } else {
-      elements.loadMoreBtn.style.display = 'none';
-    }
-  }
-
-  /**
-   * Fade out animation
-   */
-  function fadeOut(element, callback) {
-    element.style.opacity = '0';
-    element.style.transition = 'opacity ' + CONFIG.FADE_DURATION + 'ms ease';
-
-    setTimeout(callback, CONFIG.FADE_DURATION);
-  }
-
-  /**
-   * Fade in animation
-   */
-  function fadeIn(element) {
-    setTimeout(function() {
-      element.style.opacity = '1';
-    }, 50);
-  }
-
-  /**
-   * Debounce function
-   */
-  function debounce(func, delay) {
-    let timeoutId;
-    return function() {
-      const context = this;
-      const args = arguments;
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function() {
-        func.apply(context, args);
-      }, delay);
-    };
-  }
-
-  /**
-   * Escape HTML to prevent XSS
-   */
-  function escapeHtml(text) {
-    const map = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;'
-    };
-    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
-  }
-
-  /**
-   * Track analytics event
-   */
-  function trackEvent(eventName, params) {
-    // Analytics tracking removed
-  }
-
-  // Initialize app
-  init();
-
-})();
+    // Initial Render
+    renderProducts();
+});
