@@ -1,23 +1,18 @@
 /**
  * Service Worker for Tajawaz Solutions PWA
- * Version: 4.1.1 - Production Ready (Professional Edition)
+ * Version: 4.1.2 - Production Ready (Professional Edition)
  *
  * Strategies:
  * - HTML Navigation: Network First (Fresh content always, fallback to offline)
  * - Assets (CSS, JS, Images): Stale-While-Revalidate (Speed + Updates)
+ * - 3rd Party (Analytics, CDN): Network Only (Browser handles it, SW ignores)
  *
  * IMPORTANT: This file MUST remain in the root directory (/)
  */
 
-const CACHE_VERSION = 'v4.1.1';
+const CACHE_VERSION = 'v4.1.2';
 const CACHE_NAME = `tajawaz-${CACHE_VERSION}`;
 const OFFLINE_PAGE = './assets/pwa/offline.html';
-
-// Maximum cache size (in bytes) - 100MB
-const MAX_CACHE_SIZE = 100 * 1024 * 1024;
-
-// Cache expiration time (7 days)
-const CACHE_EXPIRATION = 7 * 24 * 60 * 60 * 1000;
 
 // Critical assets to precache during install
 const PRECACHE_ASSETS = [
@@ -52,7 +47,7 @@ self.addEventListener('install', (event) => {
     caches
       .open(CACHE_NAME)
       .then((cache) => {
-        // Precache assets
+        // Precache assets with Promise.allSettled for safety
         return Promise.allSettled(
           PRECACHE_ASSETS.map((url) => {
             return cache.add(url).catch((err) => {
@@ -74,7 +69,6 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     Promise.all([
-      // Clean up old caches
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
@@ -96,23 +90,23 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-http(s) requests
+  // 1. Non-HTTP(s) -> Ignore
   if (!url.protocol.startsWith('http')) return;
 
-  // Skip cross-origin requests (external APIs, CDNs)
+  // 2. Cross-Origin / 3rd Party -> Network Only (Ignore)
+  // Crucial fix: Do NOT call respondWith(). Let browser handle it naturally.
+  // This prevents SW errors if external resources are blocked or fail.
   if (url.origin !== self.location.origin) {
-    event.respondWith(fetch(request));
     return;
   }
 
-  // Admin/Edit paths - Always Network Only
+  // 3. Admin/Edit paths -> Network Only
   if (url.pathname.includes('/admin') || url.pathname.includes('/edit')) {
-    event.respondWith(fetch(request));
     return;
   }
 
   /**
-   * STRATEGY 1: HTML Pages -> Network First (with Offline Fallback)
+   * STRATEGY A: HTML Pages -> Network First
    */
   if (request.headers.get('Accept')?.includes('text/html')) {
     event.respondWith(networkFirstHTML(request));
@@ -120,8 +114,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   /**
-   * STRATEGY 2: Static Assets -> Stale-While-Revalidate
-   * CSS, JS, Images, Fonts
+   * STRATEGY B: Static Assets -> Stale-While-Revalidate
    */
   if (
     url.pathname.includes('assets/') ||
@@ -143,19 +136,14 @@ async function networkFirstHTML(request) {
     const networkResponse = await fetch(request);
     if (networkResponse && networkResponse.status === 200) {
       const cache = await caches.open(CACHE_NAME);
-      // Use event.waitUntil equivalent if accessible, or just fire and forget carefully
-      // Since we are in async function called by respondWith, we can just put it.
       cache.put(request, networkResponse.clone());
       return networkResponse;
     }
     return networkResponse;
   } catch (error) {
-    // Network failed, try cache
     const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    // No cache, show offline page
+    if (cachedResponse) return cachedResponse;
+
     const cache = await caches.open(CACHE_NAME);
     const offlineResponse = await cache.match(OFFLINE_PAGE);
     return offlineResponse || new Response('Offline', { status: 503 });
@@ -177,7 +165,7 @@ async function staleWhileRevalidate(request) {
       return networkResponse;
     })
     .catch((err) => {
-      // Network failed - silent fail for SWR
+      // Silent fail for SWR
     });
 
   return cachedResponse || fetchPromise;

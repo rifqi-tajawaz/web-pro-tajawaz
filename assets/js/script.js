@@ -10,13 +10,30 @@
  */
 const baseUrl = window.SITE_BASE_URL || './';
 
-Promise.all([
-  fetch(`${baseUrl}component/header.html`).then((res) => res.text()),
-  fetch(`${baseUrl}component/footer.html`).then((res) => res.text()),
-  fetch(`${baseUrl}component/sidebar.html`).then((res) => res.text()),
-  fetch(`${baseUrl}component/search-form.html`).then((res) => res.text()),
-])
-  .then(([headerHTML, footerHTML, sidebarHTML, searchHTML]) => {
+// Define components to load - only if container exists or it's essential
+const components = [];
+
+if (document.getElementById('header')) components.push({ id: '#header', url: 'component/header.html' });
+if (document.getElementById('footer')) components.push({ id: '#footer', url: 'component/footer.html' });
+if (document.getElementById('sidebar')) components.push({ id: '#sidebar', url: 'component/sidebar.html' });
+if (document.getElementById('edit-sidebar')) components.push({ id: '#edit-sidebar', url: 'component/sidebar.html' });
+if (document.getElementById('search-form-container')) components.push({ id: '#search-form-container', url: 'component/search-form.html' });
+
+const fetchComponent = (comp) => {
+  return fetch(`${baseUrl}${comp.url}`)
+    .then(res => {
+      if (!res.ok) throw new Error(`Failed to load ${comp.url}`);
+      return res.text();
+    })
+    .then(html => ({ id: comp.id, html }))
+    .catch(err => {
+      console.warn(`Component load warning: ${err.message}`);
+      return null;
+    });
+};
+
+Promise.all(components.map(fetchComponent))
+  .then((results) => {
     // Adjust paths in components based on current location
     const adjustPaths = (html, baseUrl) => {
       return html
@@ -27,20 +44,26 @@ Promise.all([
         .replace(/action="\.\//g, `action="${baseUrl}`);
     };
 
-    $('#header').html(adjustPaths(headerHTML, baseUrl));
-    $('#footer').html(adjustPaths(footerHTML, baseUrl));
-    $('#sidebar').html(adjustPaths(sidebarHTML, baseUrl));
-    $('#edit-sidebar').html(adjustPaths(sidebarHTML, baseUrl));
-    $('#search-form-container').html(adjustPaths(searchHTML, baseUrl));
+    // Inject HTML
+    results.forEach(result => {
+      if (result && result.html) {
+        $(result.id).html(adjustPaths(result.html, baseUrl));
+      }
+    });
   })
   .then(() => {
-    // Initialize all functions after components are loaded
+    // Initialize functions - Add null checks inside specific inits or ensure they are safe
+    // Most jQuery functions are safe on empty sets, but let's be careful with event listeners
+
     initBootstrapDropdowns();
     initBannerVideo();
     initNavLink();
-    initSidebar();
-    initEditSidebar();
-    initSidebarDropdown();
+
+    // Only init sidebar if elements exist
+    if ($('.nav-btn').length) initSidebar();
+    if ($('.content-edit').length) initEditSidebar();
+    if ($('.sidebar-dropdown-btn').length) initSidebarDropdown();
+
     initCounter();
     initThemeSwitch();
 
@@ -52,7 +75,8 @@ Promise.all([
       $('body').removeClass('lightmode');
     }
 
-    initSearchBar();
+    // Only init search if elements exist
+    if ($('.search-btn').length) initSearchBar();
 
     if (typeof initSubmitContact === 'function') {
       initSubmitContact();
@@ -62,24 +86,25 @@ Promise.all([
     }
     initAnimateData();
 
-    // Re-run logo filter check in case of late load
     updateLogoFilter(lightMode);
   })
-  .catch(err => console.error('Error loading components:', err));
+  .catch(err => console.error('Error in component loading flow:', err));
 
 /* ================================================================= */
 /* ======================== YOUTUBE BANNER VIDEO ======================= */
 /* ================================================================= */
 function initBannerVideo() {
-  let player;
+  // Check if container exists before trying to init player
+  if (!document.getElementById('banner-video-background')) return;
 
+  let player;
   const $tag = $('<script>', {
     src: 'https://www.youtube.com/iframe_api',
   });
   $('script').first().before($tag);
 
   window.onYouTubeIframeAPIReady = function () {
-    // Check if container exists before trying to init player
+    // Double check existence
     if (!document.getElementById('banner-video-background')) return;
 
     player = new YT.Player('banner-video-background', {
@@ -106,13 +131,15 @@ function initBannerVideo() {
   };
 
   function onPlayerReady(event) {
-    event.target.playVideo();
+    if(event && event.target && typeof event.target.playVideo === 'function') {
+      event.target.playVideo();
+    }
     setYoutubeSize();
     $(window).on('resize', setYoutubeSize);
   }
 
   function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
+    if (event.data === YT.PlayerState.ENDED && player && typeof player.playVideo === 'function') {
       player.playVideo();
     }
   }
@@ -134,9 +161,11 @@ function initBannerVideo() {
       newHeight = containerHeight;
     }
 
-    if (player && player.getIframe) {
-      const $iframe = $(player.getIframe());
-      $iframe.width(newWidth).height(newHeight);
+    if (player && typeof player.getIframe === 'function') {
+      const iframe = player.getIframe();
+      if (iframe) {
+        $(iframe).width(newWidth).height(newHeight);
+      }
     }
   }
 }
@@ -144,14 +173,8 @@ function initBannerVideo() {
 /* ================================================================= */
 /* ======================== THEME SWITCHER ========================= */
 /* ================================================================= */
-/**
- * Manages Light/Dark mode switching.
- * Uses CSS Filters for logo color adaptation to prevent infinite loops.
- * NO JavaScript src swapping for images allowed.
- */
 function initThemeSwitch() {
   let lightMode = localStorage.getItem('lightmode') === 'active';
-
   updateThemeUI(lightMode);
 
   $('#themeSwitch').on('click', function () {
@@ -172,17 +195,11 @@ function initThemeSwitch() {
 function updateThemeUI(isLight) {
   const iconClass = isLight ? 'fa-sun' : 'fa-moon';
   $('#themeIcon').removeClass('fa-sun fa-moon').addClass(iconClass);
-
-  // Logo handling via CSS class is automatic based on body.lightmode
-  // but we can add a helper class if needed for specific elements
   updateLogoFilter(isLight);
 }
 
 function updateLogoFilter(isLight) {
-  // This function is a safeguard to ensure logos have the correct filter class
-  // The actual visual change should be handled by CSS rules for .site-logo inside body.lightmode
-  // This avoids the infinite loop of src swapping.
-  // We just ensure the class exists if needed, though body class is usually enough.
+  // Safeguard function
 }
 
 /* ================================================================= */
@@ -202,17 +219,16 @@ function initBootstrapDropdowns() {
 /* ================================================================= */
 function initCounter() {
   const $counters = $('.counter');
+  if ($counters.length === 0) return; // Guard clause
 
   function animateCount(el, target) {
-    const duration = 2000; // 2 seconds
+    const duration = 2000;
     const start = 0;
     const startTime = performance.now();
 
     function update(currentTime) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-
-      // Easing function (linear)
       const currentVal = Math.floor(progress * (target - start) + start);
 
       $(el).text(currentVal);
@@ -223,29 +239,28 @@ function initCounter() {
         $(el).text(target);
       }
     }
-
     requestAnimationFrame(update);
   }
 
-  const observer = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          const $counter = $(entry.target);
-          const target = +$counter.data('target');
-          animateCount(entry.target, target);
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    {
-      threshold: 0.5,
-    }
-  );
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const $counter = $(entry.target);
+            const target = +$counter.data('target');
+            animateCount(entry.target, target);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
 
-  $counters.each(function () {
-    observer.observe(this);
-  });
+    $counters.each(function () {
+      observer.observe(this);
+    });
+  }
 }
 
 /* ================================================================= */
@@ -256,7 +271,6 @@ function initNavLink() {
 
   $('.navbar-nav .nav-link').each(function () {
     const href = $(this).attr('href');
-    // Normalize href (remove ./ if present)
     const normalizedHref = href ? href.replace('./', '') : '';
 
     if (href && (normalizedHref === currentPath || (currentPath === 'index.html' && normalizedHref === 'index.html'))) {
@@ -282,6 +296,8 @@ function initSidebar() {
   const $closeBtn = $('.close-btn');
   const $overlay = $('.sidebar-overlay');
   const $sidebar = $('.sidebar');
+
+  if (!$menuBtn.length || !$sidebar.length) return;
 
   $menuBtn.click(function () {
     $overlay.addClass('active');
@@ -310,6 +326,8 @@ function initEditSidebar() {
   const $closeBtn = $('.close-btn-second');
   const $overlay = $('.content-overlay');
   const $sidebar = $('.content-edit-sidebar');
+
+  if (!$contentBtn.length || !$sidebar.length) return;
 
   $contentBtn.click(function () {
     $sidebar.addClass('active');
@@ -363,7 +381,6 @@ function initSearchBar() {
     }
   });
 
-  // Initialize search logic if we are on the search results page
   if (window.location.pathname.includes('search.html')) {
       initSearchLogic();
   }
@@ -379,7 +396,6 @@ function initSearchLogic() {
     $resultTitle.text(`Search Result for "${keyword}"`);
     $resultContainer.html('<p>Loading results...</p>');
 
-    // Fetch search index asynchronously
     fetch(`${baseUrl}assets/json/search-index.json`)
       .then(response => response.json())
       .then(data => {
@@ -393,8 +409,6 @@ function initSearchLogic() {
 
         if (results.length > 0) {
           results.forEach((item) => {
-            // Adjust URL if necessary based on current location vs index location
-            // For now assuming index URLs are relative to root which is what we want
             const $div = $('<div>').addClass('result').html(`
               <a href="${item.url}"><h2>${item.title}</h2></a>
               <p>${item.description}</p>
@@ -420,25 +434,32 @@ function initSearchLogic() {
 /* ================================================================= */
 function initAnimateData() {
   const $elements = $('[data-animate]');
-  const observer = new window.IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const $el = $(entry.target);
-          const delay = $el.data('delay') || 0;
-          setTimeout(() => {
-            $el.addClass($el.data('animate'));
-            $el.css('opacity', 1);
-            observer.unobserve(entry.target);
-          }, delay);
-        }
+  if ($elements.length === 0) return;
+
+  if ('IntersectionObserver' in window) {
+    const observer = new window.IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const $el = $(entry.target);
+            const delay = $el.data('delay') || 0;
+            setTimeout(() => {
+              $el.addClass($el.data('animate'));
+              $el.css('opacity', 1);
+              observer.unobserve(entry.target);
+            }, delay);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    $elements.each(function () {
+      observer.observe(this);
+    });
+  } else {
+      // Fallback for browsers without IntersectionObserver
+      $elements.each(function() {
+          $(this).addClass($(this).data('animate')).css('opacity', 1);
       });
-    },
-    {
-      threshold: 0.1,
-    }
-  );
-  $elements.each(function () {
-    observer.observe(this);
-  });
+  }
 }
