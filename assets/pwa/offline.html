@@ -4,62 +4,358 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Offline - Tajawaz Solutions</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="icon" type="image/svg+xml" href="../images/favicon/favicon.svg" />
-    <meta name="theme-color" content="#5f2ded" />
+
+    <!-- Inlining critical CSS for robust offline fallback -->
+    <!-- When offline, relative paths can be tricky if the URL depth changes. -->
+    <!-- Inlining ensures styles work regardless of the route. -->
+
     <style>
+      /* PWA Theme Variables */
+      :root {
+        /* ===================================================================
+           PWA Colors - Direct var() Mapping dari Global :root
+           =================================================================== */
+        --pwa-primary: #d1d1d1;
+        --pwa-secondary: #040404;
+        --pwa-text-color: #8b8b8b;
+        --pwa-text-color-2: #d1d1d1;
+        --pwa-accent: #5f2ded;
+        --pwa-accent-2: #ffffff;
+        --pwa-accent-3: #1f1f1f;
+        --pwa-accent-4: #0e0e0e;
+        --pwa-accent-5: rgba(4, 4, 4, 0.49);
+        --pwa-accent-6: rgba(200, 42, 239, 0.52);
+        --pwa-accent-transparent: rgba(95, 45, 237, 0.1);
+        --pwa-accent-transparent-2: rgba(95, 45, 237, 0.2);
+        --pwa-star-color: #ffd700;
+        --pwa-error-color: #ef4444;
+
+        /* Font Family - Fallback */
+        --pwa-font-family: 'Plus Jakarta Sans', sans-serif;
+
+        /* Font Sizes */
+        --pwa-font-size-xs: 0.75rem;
+        --pwa-font-size-sm: 0.875rem;
+        --pwa-font-size-base: 1rem;
+        --pwa-font-size-lg: 1.125rem;
+        --pwa-font-size-xl: 1.25rem;
+        --pwa-font-size-2xl: 1.5rem;
+        --pwa-font-size-3xl: 1.875rem;
+        --pwa-font-size-4xl: 2.25rem;
+        --pwa-font-size-5xl: 3rem;
+
+        /* Font Weights */
+        --pwa-font-weight-normal: 400;
+        --pwa-font-weight-medium: 500;
+        --pwa-font-weight-semibold: 600;
+        --pwa-font-weight-bold: 700;
+        --pwa-font-weight-black: 900;
+
+        /* Line Heights */
+        --pwa-line-height-tight: 1.25;
+        --pwa-line-height-snug: 1.375;
+        --pwa-line-height-normal: 1.5;
+        --pwa-line-height-relaxed: 1.625;
+        --pwa-line-height-loose: 2;
+
+        /* Spacing */
+        --pwa-space-0: 0px;
+        --pwa-space-xs: 4px;
+        --pwa-space-sm: 8px;
+        --pwa-space-md: 16px;
+        --pwa-space-lg: 20px;
+        --pwa-space-xl: 24px;
+        --pwa-space-2xl: 32px;
+        --pwa-space-3xl: 40px;
+        --pwa-space-4xl: 48px;
+        --pwa-space-5xl: 64px;
+
+        /* Border Radius */
+        --pwa-radius-none: 0;
+        --pwa-radius-sm: 0.125rem;
+        --pwa-radius-md: 0.375rem;
+        --pwa-radius-lg: 0.5rem;
+        --pwa-radius-xl: 25px;
+        --pwa-radius-2xl: 1rem;
+        --pwa-radius-3xl: 32px;
+        --pwa-radius-full: 50px;
+        --pwa-radius-circle: 50%;
+
+        /* Shadows */
+        --pwa-shadow-top-left: -5px -5px 20px rgba(60, 60, 60, 0.1);
+        --pwa-shadow-bottom-right: 5px 5px 20px rgba(0, 0, 0, 0.5);
+        --pwa-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --pwa-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --pwa-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --pwa-shadow-2xl: 0 20px 60px rgba(95, 45, 237, 0.2);
+
+        /* Gradients */
+        --pwa-gradient-bg: radial-gradient(at top left, #1f1f1f 0%, #0e0e0e 50%);
+        --pwa-gradient-text: linear-gradient(284deg, rgba(95, 45, 237, 0.1) 3%, #d1d1d1 100%);
+        --pwa-gradient-primary: linear-gradient(135deg, #5f2ded 0%, rgba(200, 42, 239, 0.52) 100%);
+        --pwa-gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --pwa-gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+
+        /* Transitions */
+        --pwa-transition-base: 0.3s ease;
+        --pwa-transition-slow: 0.7s ease;
+        --pwa-transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+        /* Backdrop */
+        --pwa-blur-md: blur(10px);
+
+        /* Opacity */
+        --pwa-opacity-30: 0.3;
+        --pwa-opacity-50: 0.5;
+        --pwa-opacity-100: 1;
+      }
+
+      /* PWA Styles Inlined */
       body {
+        font-family: var(--pwa-font-family);
+        color: var(--pwa-primary);
+        background-color: var(--pwa-secondary);
+        -webkit-font-smoothing: antialiased;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      main {
+        flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 100vh;
+      }
+
+      .pwa-offline-container {
+        width: 100%;
+        padding: var(--pwa-space-lg);
+        position: relative;
+        overflow-x: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pwa-offline-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(at top left, var(--pwa-accent-3) 0%, var(--pwa-accent-4) 50%);
+        opacity: var(--pwa-opacity-30);
+        pointer-events: none;
+        animation: pwa-gradient-shift 7s ease-in-out infinite;
+      }
+
+      @keyframes pwa-gradient-shift {
+        0%, 100% { opacity: var(--pwa-opacity-30); }
+        50% { opacity: 0.2; }
+      }
+
+      .pwa-offline-content {
         text-align: center;
-        background-color: #040404;
-        color: #d1d1d1;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        max-width: 700px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        background: var(--pwa-gradient-bg);
+        padding: var(--pwa-space-4xl) var(--pwa-space-3xl);
+        border-radius: var(--pwa-radius-xl);
+        border: 1px solid var(--pwa-accent-3);
+        backdrop-filter: var(--pwa-blur-md);
+        box-shadow: var(--pwa-shadow-top-left);
       }
-      .offline-container {
-        padding: 2rem;
-        max-width: 600px;
-      }
-      .icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        color: #5f2ded;
-      }
-      h1 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-      p {
-        margin-bottom: 2rem;
-        color: #8b8b8b;
-      }
-      .btn {
-        display: inline-block;
-        padding: 12px 24px;
-        background-color: #5f2ded;
+
+      .pwa-offline-icon {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto var(--pwa-space-3xl);
+        background: var(--pwa-gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: white;
-        text-decoration: none;
-        border-radius: 50px;
-        font-weight: 600;
-        transition: opacity 0.3s;
+        box-shadow: var(--pwa-shadow-2xl);
+        animation: pwa-pulse-icon 1s ease-in-out infinite;
       }
-      .btn:hover {
-        opacity: 0.9;
+
+      @keyframes pwa-pulse-icon {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+
+      .pwa-offline-logo {
+        font-size: var(--pwa-font-size-base);
+        font-weight: var(--pwa-font-weight-semibold);
+        color: var(--pwa-accent);
+        margin-bottom: var(--pwa-space-lg);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .pwa-offline-title {
+        font-size: 2.8rem;
+        margin-bottom: var(--pwa-space-lg);
+        font-weight: var(--pwa-font-weight-bold);
+        background: var(--pwa-gradient-text);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: var(--pwa-primary);
+        line-height: var(--pwa-line-height-snug);
+      }
+
+      .pwa-offline-subtitle {
+        font-size: 1.2rem;
+        line-height: var(--pwa-line-height-loose);
+        margin-bottom: var(--pwa-space-3xl);
+        color: var(--pwa-text-color);
+        font-weight: var(--pwa-font-weight-medium);
+      }
+
+      .pwa-button-group {
+        display: flex;
+        gap: var(--pwa-space-md);
+        justify-content: center;
+        margin-bottom: var(--pwa-space-3xl);
+        flex-wrap: wrap;
+      }
+
+      .pwa-btn {
+        background: var(--pwa-accent);
+        color: var(--pwa-accent-2);
+        border: none;
+        padding: var(--pwa-space-md) var(--pwa-space-4xl);
+        font-size: 1.1rem;
+        font-weight: var(--pwa-font-weight-semibold);
+        border-radius: var(--pwa-radius-full);
+        cursor: pointer;
+        transition: all var(--pwa-transition-base);
+        box-shadow: var(--pwa-shadow-top-left);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--pwa-space-sm);
+        text-decoration: none;
+        font-family: var(--pwa-font-family);
+        line-height: var(--pwa-line-height-snug);
+      }
+
+      .pwa-btn.secondary {
+        background: rgba(95, 45, 237, 0.1);
+        border: 1px solid var(--pwa-accent);
+        color: var(--pwa-accent);
+      }
+
+      .pwa-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--pwa-shadow-bottom-right);
+      }
+
+      .pwa-status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--pwa-space-xs);
+        padding: var(--pwa-space-sm) var(--pwa-space-lg);
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: var(--pwa-radius-full);
+        margin-bottom: var(--pwa-space-2xl);
+        font-size: var(--pwa-font-size-sm);
+        color: #fca5a5;
+        font-weight: var(--pwa-font-weight-medium);
+      }
+
+      .pwa-status-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--pwa-gradient-error);
+        border-radius: 50%;
+        animation: pwa-blink 0.7s infinite;
+      }
+
+      @keyframes pwa-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .pwa-offline-content { padding: var(--pwa-space-3xl) var(--pwa-space-2xl); }
+        .pwa-offline-title { font-size: 2.2rem; }
+        .pwa-offline-icon { width: 110px; height: 110px; }
+        .pwa-button-group { flex-direction: column; width: 100%; }
+        .pwa-btn { width: 100%; justify-content: center; }
       }
     </style>
   </head>
   <body>
-    <div class="offline-container">
-      <div class="icon">📡</div>
-      <h1>Anda Sedang Offline</h1>
-      <p>
-        Sepertinya Anda tidak terhubung ke internet. Halaman ini akan otomatis dimuat ulang ketika koneksi kembali.
-      </p>
-      <a href="/" class="btn" onclick="window.location.reload(); return false;">Coba Lagi</a>
-    </div>
+
+    <main>
+      <div class="pwa-offline-container">
+        <div class="pwa-offline-content">
+
+          <!-- Icon: Inline SVG for zero-dependency -->
+          <div class="pwa-offline-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+              <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+              <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+              <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+              <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+              <line x1="12" y1="20" x2="12.01" y2="20"></line>
+            </svg>
+          </div>
+
+          <!-- Branding -->
+          <div class="pwa-offline-logo">Tajawaz Solutions</div>
+
+          <!-- Message -->
+          <h1 class="pwa-offline-title">Anda Sedang Offline</h1>
+          <p class="pwa-offline-subtitle">
+            Jangan khawatir, ini hanya sementara. Periksa koneksi internet Anda dan coba lagi.
+          </p>
+
+          <!-- Actions -->
+          <div class="pwa-button-group">
+            <button onclick="window.location.reload()" class="pwa-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              Coba Lagi
+            </button>
+            <!-- Use JavaScript for Home navigation to handle base URL dynamically if needed, or just absolute relative -->
+            <a href="/" onclick="event.preventDefault(); window.location.href = './index.html'" class="pwa-btn secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Ke Beranda
+            </a>
+          </div>
+
+          <!-- Status -->
+          <div class="pwa-status-indicator">
+            <div class="pwa-status-dot"></div>
+            Menunggu koneksi internet...
+          </div>
+
+        </div>
+      </div>
+    </main>
+
     <script>
+      // Auto-reload when online
       window.addEventListener('online', () => {
         window.location.reload();
       });
