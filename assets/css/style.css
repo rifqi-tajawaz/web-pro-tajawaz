@@ -114,7 +114,7 @@
   --secondary: #040404;
   --text-color: #8b8b8b;
   --text-color-2: var(--secondary);
-  --accent-color: #5e2ced;
+  --accent-color: #5e2ced; /* Primary Brand Color - Confirmed */
   --accent-color-2: #ffffff;
   --accent-color-3: #1f1f1f;
   --accent-color-4: #0e0e0e;
@@ -233,12 +233,33 @@
   transition: filter 0.3s ease;
 }
 
-/* Light Mode - Invert Logo Colors (White -> Black) */
-/* Assuming default logos are white for dark theme */
-body.lightmode .site-logo {
-  filter: invert(1) hue-rotate(180deg);
+/* Light Mode - Invert Logo Colors */
+/* Since the original logo is dark, in light mode (which uses light background) we keep it dark.
+   But wait, the user said "The current logo is dark. For Dark Mode, use CSS Filters (e.g., filter: invert(1) brightness(200%);)"
+
+   So:
+   Default (Light Mode) = Dark Logo
+   Dark Mode (Body has NO class, or Body HAS .darkmode? Wait, the template uses .lightmode class on body for light mode.
+   Let's check script.js:
+   if (lightMode) { $('body').addClass('lightmode'); } else { $('body').removeClass('lightmode'); }
+
+   Default State (No Class) = Dark Mode (Dark Background).
+   If default is Dark Mode, and Logo is Dark, we need to Invert it to make it visible on Dark Background.
+
+   Light Mode (.lightmode) = Light Background. Dark Logo looks good.
+*/
+
+/* Default State (Dark Mode) - Invert Dark Logo to Light */
+body:not(.lightmode) .site-logo {
+  filter: invert(1) brightness(200%);
 }
 
+/* Light Mode - Restore Original Dark Logo */
+body.lightmode .site-logo {
+  filter: none;
+}
+
+/* Partner Logos - Usually colored or white. */
 body.lightmode .partner-logo {
   filter: invert(1) grayscale(100%);
 }
@@ -317,6 +338,11 @@ body.lightmode .partner-logo {
 html {
   overflow-x: hidden; /* Block horizontal scroll at root level */
   scroll-behavior: smooth;
+  box-sizing: border-box; /* Global Box Sizing */
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 body {
@@ -5782,6 +5808,7 @@ body.lightmode .cta-service-banner::before {
     margin-left: -20px;
     margin-right: -20px;
     width: calc(100% + 40px);
+    max-width: none; /* Allow overflow */
   }
   .copyright-container {
     flex-direction: column;
