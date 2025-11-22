@@ -5527,7 +5527,7 @@ body.lightmode .cta-service-banner::before {
     height: 550px;
   }
   .card-about {
-    width: 250px;
+    width: 100%;
   }
   .card-about .counter {
     font-size: var(--font-size-10xl);
@@ -5548,7 +5548,7 @@ body.lightmode .cta-service-banner::before {
     width: 100%;
   }
   .card-expertise {
-    width: 250px;
+    width: 100%;
   }
   .card-chooseus {
     flex-direction: column;
@@ -5556,7 +5556,7 @@ body.lightmode .cta-service-banner::before {
   }
 
   .card-chooseus-cta-wrapper {
-    width: 250px;
+    width: 100%;
   }
 
   .chooseus-icon-wrapper {
