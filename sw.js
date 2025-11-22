@@ -13,41 +13,41 @@
  * IMPORTANT: File ini HARUS di root directory (/)
  * ================================================================ */
 
-const CACHE_VERSION = 'v4.3.0';
+const CACHE_VERSION = 'v4.3.1';
 const CACHE_NAME = `tajawaz-${CACHE_VERSION}`;
-const OFFLINE_PAGE = '/pwa/offline.html';
+const OFFLINE_PAGE = './pwa/offline.html';
 
 /* ================================================================
  * PRECACHE ASSETS
  * ================================================================ */
 
 const PRECACHE_ASSETS = [
-  '/pwa/offline.html',
-  '/assets/css/main/style.css',
-  '/assets/js/main/script.js',
-  '/assets/js/main/base-url.js',
-  '/assets/images/favicon/favicon.ico',
-  '/assets/images/favicon/favicon.svg',
-  '/assets/images/favicon/favicon-96x96.png',
-  '/assets/images/favicon/icon-72x72.png',
-  '/assets/images/favicon/icon-128x128.png',
-  '/assets/images/favicon/icon-144x144.png',
-  '/assets/images/favicon/icon-152x152.png',
-  '/assets/images/favicon/web-app-manifest-192x192.png',
-  '/assets/images/favicon/icon-384x384.png',
-  '/assets/images/favicon/web-app-manifest-512x512.png',
-  '/assets/webfonts/fa-brands-400.woff2',
-  '/assets/webfonts/fa-brands-400.ttf',
-  '/assets/webfonts/fa-regular-400.woff2',
-  '/assets/webfonts/fa-regular-400.ttf',
-  '/assets/webfonts/fa-solid-900.woff2',
-  '/assets/webfonts/fa-solid-900.ttf',
-  '/index.html',
-  '/pages/about.html',
-  '/pages/services.html',
-  '/pages/contact.html',
-  '/pages/bio-profile.html',
-  '/pages/products-digital.html'
+  './pwa/offline.html',
+  './assets/css/main/style.css',
+  './assets/js/main/script.js',
+  './assets/js/main/base-url.js',
+  './assets/images/favicon/favicon.ico',
+  './assets/images/favicon/favicon.svg',
+  './assets/images/favicon/favicon-96x96.png',
+  './assets/images/favicon/icon-72x72.png',
+  './assets/images/favicon/icon-128x128.png',
+  './assets/images/favicon/icon-144x144.png',
+  './assets/images/favicon/icon-152x152.png',
+  './assets/images/favicon/web-app-manifest-192x192.png',
+  './assets/images/favicon/icon-384x384.png',
+  './assets/images/favicon/web-app-manifest-512x512.png',
+  './assets/webfonts/fa-brands-400.woff2',
+  './assets/webfonts/fa-brands-400.ttf',
+  './assets/webfonts/fa-regular-400.woff2',
+  './assets/webfonts/fa-regular-400.ttf',
+  './assets/webfonts/fa-solid-900.woff2',
+  './assets/webfonts/fa-solid-900.ttf',
+  './index.html',
+  './pages/about.html',
+  './pages/services.html',
+  './pages/contact.html',
+  './pages/bio-profile.html',
+  './pages/products-digital.html'
 ];
 
 /* ================================================================
@@ -186,7 +186,7 @@ async function networkFirstHTML(request) {
     let offlineResponse = await cache.match(OFFLINE_PAGE);
 
     if (!offlineResponse) {
-      const altOfflineResponse = await cache.match('/pwa/offline.html');
+      const altOfflineResponse = await cache.match('./pwa/offline.html');
       if (altOfflineResponse) offlineResponse = altOfflineResponse;
     }
 

@@ -2,7 +2,7 @@
   "name": "Tajawaz Solutions - The Art Of Exceeding Value",
   "short_name": "Tajawaz",
   "description": "Ekosistem bisnis lengkap Indonesia: mentorship praktis, tools bisnis, peluang kemitraan & komunitas entrepreneur. Raih kebebasan finansial dari berbagai latar belakang.",
-  "start_url": "/",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -141,7 +141,7 @@
   ],
   "prefer_related_applications": false,
   "share_target": {
-    "action": "/share",
+    "action": "./share",
     "method": "GET",
     "enctype": "application/x-www-form-urlencoded",
     "params": {
