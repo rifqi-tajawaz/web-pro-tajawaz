@@ -4701,151 +4701,147 @@ body.lightmode .cta-service-banner::before {
 
 /* 56.1 Footer Layout */
 
-.footer {
-  border-radius: 10px;
+.footer{
+    border-radius: 10px;
 }
 
 /* 56.2 Footer List */
 
-.footer-list {
-  list-style: none;
-  padding-left: 0;
+.footer-list{
+    list-style: none;
+    padding-left: 0;
 }
 
-.footer-list li {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: start;
-  gap: 1em;
-  margin-bottom: 15px;
-  color: var(--text-color);
+.footer-list li{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 1em;
+    margin-bottom: 15px;
+    color: var(--text-color);
 }
 
-.footer-list li:last-child {
-  margin-bottom: 0px;
+.footer-list li:last-child{
+    margin-bottom: 0px;
 }
 
-.footer-list a {
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  color: var(--text-color);
-  transition: all 0.2s;
+.footer-list a{
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.2s;
 }
 
-.footer-list a:hover {
-  color: var(--primary);
+.footer-list a:hover{
+    color: var(--primary);
 }
 
 /* 56.3 Contact List */
 
-.contact-list {
-  list-style: none;
-  padding-left: 0;
-  margin-bottom: 0px;
+.contact-list{
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0px;
 }
 
-.contact-list li {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: start;
-  justify-content: start;
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  margin-bottom: 15px;
-  color: var(--primary);
+.contact-list li{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: start;
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: var(--primary);
 }
 
-.contact-list li:last-child {
-  margin-bottom: 0px;
+.contact-list li:last-child{
+    margin-bottom: 0px;
 }
 
 /* 56.4 Footer Logo Container */
 
-.footer-logo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  gap: 30px 30px;
+.footer-logo-container{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 30px 30px;
 }
 
 /* 56.5 Footer Quick Links */
 
-.footer-quick-links {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  gap: 30px 30px;
+.footer-quick-links{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 30px 30px;
 }
 
 /* 56.6 Footer Services Container */
 
-.footer-services-container {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  gap: 30px 30px;
+.footer-services-container{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 30px 30px;
 }
 
 /* 56.7 Footer Contact Container */
 
-.footer-contact-container {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  gap: 30px 30px;
+.footer-contact-container{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 30px 30px;
 }
 
 /* 56.8 Copyright Container */
 
-.copyright-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 50px 50px;
-  border-top: 1px solid var(--accent-color-3);
-  padding: 20px 0px 20px 0px;
+.copyright-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 50px 50px;
+    border-top: 1px solid var(--accent-color-3);
+    padding: 20px 0px 20px 0px;
 }
 
-.copyright {
-  font-size: var(--font-size-base);
-  color: var(--text-color);
-  font-weight: 500;
-  line-height: var(--line-height-loose);
+.copyright{
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    font-weight: 500;
+    line-height: var(--line-height-loose);
 }
 
 /* 56.9 Legal Link */
 
-.legal-link {
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  color: var(--text-color);
-  transition: all 0.2s;
-  line-height: var(--line-height-loose);
+.legal-link{
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.2s;
+    line-height: var(--line-height-loose);
 }
 
-.legal-link:hover {
-  color: var(--primary);
+.legal-link:hover{
+    color: var(--primary);
 }
 
 /* 56.10 Footer Spacer */
 
-.footer-spacer {
-  width: initial;
-  height: 3px;
-  align-self: center;
-  background-color: transparent;
-  background-image: radial-gradient(
-    at center center,
-    var(--accent-color-6) 0%,
-    var(--accent-transparent) 70%
-  );
+.footer-spacer{
+    width: initial;
+    height: 3px;
+    align-self: center;
+    background-color: transparent;
+    background-image: radial-gradient(at center center, var(--accent-color-6) 0%, var(--accent-transparent) 70%);
 }
 
 /* ================== 57. Media Queries ================== */
