@@ -5703,34 +5703,37 @@ body.lightmode .cta-service-banner::before {
   }
 
   .footer-logo-container {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
   }
   .footer-quick-links {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
   }
   .footer-services-container {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
   }
   .footer-contact-container {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .footer-contact-container .social-container {
+    justify-content: flex-start;
   }
   .footer-list li {
-    justify-content: center;
-    text-align: center;
+    justify-content: flex-start;
+    text-align: left;
   }
   .footer-list a {
     font-size: var(--font-size-xs);
   }
   .contact-list li {
-    justify-content: center;
+        justify-content: flex-start;
     font-size: var(--font-size-xs);
   }
   /* Fix Social Icons on Mobile */
