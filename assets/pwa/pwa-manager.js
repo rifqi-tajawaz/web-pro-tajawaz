@@ -564,7 +564,7 @@ class PWAManager {
       error: 'color: #ef4444',
     };
 
-    console.log(`%c${prefix} ${message}`, styles[level] || styles.info);
+    // console.log(`%c${prefix} ${message}`, styles[level] || styles.info);
   }
 }
 

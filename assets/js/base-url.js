@@ -59,5 +59,5 @@
       window.SITE_BASE_URL = '../../';
   }
 
-  console.log('SITE_BASE_URL set to:', window.SITE_BASE_URL);
+  // console.log('SITE_BASE_URL set to:', window.SITE_BASE_URL);
 })();
