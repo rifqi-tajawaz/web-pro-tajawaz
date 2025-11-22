@@ -4627,7 +4627,6 @@ body.lightmode .cta-service-banner::before {
 /* 🔧 FIX: Prevent horizontal scrollbar from Animate.css animations */
 
 /* Specific fix for Bootstrap grid system with Animate.css */
-.row,
 .container,
 .container-fluid {
   overflow-x: clip; /* Modern: clip overflow without creating scroll context */
@@ -4636,7 +4635,6 @@ body.lightmode .cta-service-banner::before {
 
 /* Fallback untuk browser yang tidak support overflow: clip */
 @supports not (overflow: clip) {
-  .row,
   .container,
   .container-fluid {
     overflow-x: hidden;
