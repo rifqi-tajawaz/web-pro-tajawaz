@@ -1,208 +1,204 @@
-/**
- * Service Worker for Tajawaz Solutions PWA
- * Version: 4.0.0 - Production Ready (Professional Edition)
- *
- * IMPORTANT: This file MUST remain in the root directory (/)
- * Reason: Service Workers can only control pages within their scope.
- *         A SW at root (/) can control the entire site.
- *
- * PWA File Structure:
- * - /sw.js (this file - MUST stay in root)
- * - /assets/pwa/pwa-manager.js (PWA installer & manager)
- * - /assets/pwa/manifest.json (PWA manifest)
- * - /assets/pwa/offline.html (offline fallback page)
- *
- * Caching Strategy:
- * - Precache: Critical offline assets during install
- * - Cache First: Static assets (CSS, JS, Images, Fonts)
- * - Stale-While-Revalidate: HTML pages and dynamic content
- * - Network First: API calls with fallback
- *
- * Features:
- * - Offline support with fallback page
- * - Smart caching with automatic cleanup
- * - Background sync for forms
- * - Push notifications support
- * - Cache versioning and expiration
- * - Skip waiting for instant updates
- * - Production-ready error handling
- */
+/* ================================================================
+ * SERVICE WORKER - TAJAWAZ SOLUTIONS PWA
+ * ================================================================
+ * Version: 4.3.0 - Production Ready
+ * 
+ * Purpose: Progressive Web App service worker untuk offline capability
+ * 
+ * Caching Strategies:
+ * - HTML Navigation: Network First (fresh content prioritized)
+ * - Assets (CSS, JS, Images): Stale-While-Revalidate
+ * - 3rd Party (Analytics, CDN): Network Only
+ * 
+ * IMPORTANT: File ini HARUS di root directory (/)
+ * ================================================================ */
 
-const CACHE_VERSION = 'v4.0.0';
+const CACHE_VERSION = 'v4.3.0';
 const CACHE_NAME = `tajawaz-${CACHE_VERSION}`;
-const OFFLINE_PAGE = '/assets/pwa/offline.html';
+const OFFLINE_PAGE = '/pwa/offline.html';
 
-// Maximum cache size (in bytes) - 50MB
-const MAX_CACHE_SIZE = 50 * 1024 * 1024;
+/* ================================================================
+ * PRECACHE ASSETS
+ * ================================================================ */
 
-// Cache expiration time (7 days)
-const CACHE_EXPIRATION = 7 * 24 * 60 * 60 * 1000;
-
-// Critical assets to precache during install
 const PRECACHE_ASSETS = [
-  '/assets/pwa/offline.html',
+  '/pwa/offline.html',
+  '/assets/css/main/style.css',
+  '/assets/js/main/script.js',
+  '/assets/js/main/base-url.js',
   '/assets/images/favicon/favicon.ico',
   '/assets/images/favicon/favicon.svg',
   '/assets/images/favicon/favicon-96x96.png',
+  '/assets/images/favicon/icon-72x72.png',
+  '/assets/images/favicon/icon-128x128.png',
+  '/assets/images/favicon/icon-144x144.png',
+  '/assets/images/favicon/icon-152x152.png',
   '/assets/images/favicon/web-app-manifest-192x192.png',
+  '/assets/images/favicon/icon-384x384.png',
   '/assets/images/favicon/web-app-manifest-512x512.png',
-  '/assets/images/favicon/apple-touch-icon.png',
+  '/index.html',
+  '/pages/about.html',
+  '/pages/services.html',
+  '/pages/contact.html',
+  '/pages/bio-profile.html',
+  '/pages/products-digital.html'
 ];
 
-/**
+/* ================================================================
  * INSTALL EVENT
- * Precache critical assets for offline functionality
- */
+ * ================================================================
+ * Purpose: Precache critical assets saat SW pertama kali install
+ * ================================================================ */
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
       .then((cache) => {
-        // Precache assets with individual error handling
         return Promise.allSettled(
           PRECACHE_ASSETS.map((url) => {
-            return cache.add(url).catch(() => {
-              // Silently fail for individual assets
-              console.warn(`[SW] Failed to precache: ${url}`);
+            return cache.add(url).catch((err) => {
+              console.warn(`[SW] Failed to precache: ${url}`, err);
               return Promise.resolve();
             });
           })
         );
       })
-      .then(() => {
-        // Skip waiting - activate new SW immediately
+      .then(async () => {
+        const cache = await caches.open(CACHE_NAME);
+        const offlinePage = await cache.match(OFFLINE_PAGE);
+        if (!offlinePage) {
+          console.error('[SW] CRITICAL: Offline page not cached!');
+        } else {
+          console.log('[SW] ✓ Offline page successfully cached');
+        }
         return self.skipWaiting();
-      })
-      .catch((error) => {
-        console.error('[SW] Install error:', error);
       })
   );
 });
 
-/**
+/* ================================================================
  * ACTIVATE EVENT
- * Clean up old caches and take control
- */
+ * ================================================================
+ * Purpose: Cleanup old caches dan activate new service worker
+ * ================================================================ */
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     Promise.all([
-      // Clean up old caches
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
             if (cacheName.startsWith('tajawaz-') && cacheName !== CACHE_NAME) {
-              console.log(`[SW] Deleting old cache: ${cacheName}`);
               return caches.delete(cacheName);
             }
           })
         );
       }),
-      // Take control of all pages immediately
       self.clients.claim(),
     ])
   );
 });
 
-/**
+/* ================================================================
  * FETCH EVENT
- * Intercept network requests and apply caching strategies
- */
+ * ================================================================
+ * Purpose: Intercept network requests dan apply caching strategies
+ * ================================================================ */
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-http(s) requests
-  if (!url.protocol.startsWith('http')) {
-    return;
-  }
-
-  // Skip cross-origin requests (external APIs, CDNs)
-  if (url.origin !== self.location.origin) {
-    event.respondWith(fetch(request));
-    return;
-  }
-
-  // Skip admin/edit URLs - always fetch fresh
-  if (url.pathname.includes('/admin') || url.pathname.includes('/edit')) {
-    event.respondWith(fetch(request));
-    return;
-  }
+  if (!url.protocol.startsWith('http')) return;
 
   /**
-   * STRATEGY 1: API & Dynamic Data - Network First with Cache Fallback
+   * Cross-Origin Resources
+   * Purpose: Let browser handle 3rd party resources naturally
    */
-  if (url.pathname.includes('/api/') || url.pathname.includes('/php/')) {
-    event.respondWith(networkFirst(request));
+  if (url.origin !== self.location.origin) {
     return;
   }
 
   /**
-   * STRATEGY 2: HTML Pages - Stale-While-Revalidate with Offline Fallback
+   * Admin/Edit Paths
+   * Purpose: Always fetch fresh untuk admin interfaces
+   */
+  if (url.pathname.includes('/admin') || url.pathname.includes('/edit')) {
+    return;
+  }
+
+  /**
+   * Strategy A: HTML Pages - Network First
+   * Purpose: Prioritas content terbaru, fallback ke cache
    */
   if (request.headers.get('Accept')?.includes('text/html')) {
-    event.respondWith(
-      staleWhileRevalidate(request).catch(() => {
-        return caches.match(OFFLINE_PAGE).then((response) => {
-          return response || new Response('Offline', { status: 503 });
-        });
-      })
-    );
+    event.respondWith(networkFirstHTML(request));
     return;
   }
 
   /**
-   * STRATEGY 3: Static Assets - Cache First with Network Fallback
-   * CSS, JS, Images, Fonts
+   * Strategy B: Static Assets - Stale-While-Revalidate
+   * Purpose: Speed + background updates
    */
   if (
-    url.pathname.includes('/assets/') ||
-    request.url.match(/\.(css|js|jpg|jpeg|png|svg|webp|gif|woff|woff2|ttf|eot|ico)$/i)
+    url.pathname.includes('assets/') ||
+    request.url.match(/\.(css|js|jpg|jpeg|png|svg|webp|gif|woff|woff2|ttf|eot|ico|json)$/i)
   ) {
-    event.respondWith(cacheFirst(request));
+    event.respondWith(staleWhileRevalidate(request));
     return;
   }
 
-  /**
-   * DEFAULT STRATEGY: Stale-While-Revalidate
-   */
   event.respondWith(staleWhileRevalidate(request));
 });
 
+/* ================================================================
+ * CACHING STRATEGIES
+ * ================================================================ */
+
 /**
- * Cache First Strategy
- * Try cache first, fallback to network, then cache the result
+ * Network First Strategy
+ * 
+ * Purpose: Fetch dari network dulu, fallback ke cache jika offline
+ * Use Case: HTML pages yang butuh content terbaru
  */
-async function cacheFirst(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cachedResponse = await cache.match(request);
-
-  if (cachedResponse) {
-    // Check if cached response is expired
-    const cachedDate = new Date(cachedResponse.headers.get('date')).getTime();
-    const now = Date.now();
-
-    if (now - cachedDate < CACHE_EXPIRATION) {
-      return cachedResponse;
-    }
-  }
-
+async function networkFirstHTML(request) {
   try {
     const networkResponse = await fetch(request);
-
     if (networkResponse && networkResponse.status === 200) {
+      const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
+      return networkResponse;
     }
-
     return networkResponse;
   } catch (error) {
-    // Network failed, return cached version even if expired
-    return cachedResponse || new Response('Network error', { status: 503 });
+    const cachedResponse = await caches.match(request);
+    if (cachedResponse) return cachedResponse;
+
+    console.log('[SW] Network failed. Serving offline page...');
+    const cache = await caches.open(CACHE_NAME);
+    let offlineResponse = await cache.match(OFFLINE_PAGE);
+
+    if (!offlineResponse) {
+      const altOfflineResponse = await cache.match('/pwa/offline.html');
+      if (altOfflineResponse) offlineResponse = altOfflineResponse;
+    }
+
+    if (offlineResponse) {
+      console.log('[SW] Served offline page from cache.');
+      return offlineResponse;
+    } else {
+      console.warn('[SW] Offline page not found in cache.');
+      return new Response('Offline', { status: 503 });
+    }
   }
 }
 
 /**
  * Stale-While-Revalidate Strategy
- * Return cached version immediately while fetching fresh version in background
+ * 
+ * Purpose: Return cached content immediately, update cache di background
+ * Use Case: Static assets yang jarang berubah
  */
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
@@ -215,245 +211,39 @@ async function staleWhileRevalidate(request) {
       }
       return networkResponse;
     })
-    .catch(() => null);
+    .catch((err) => {
+      // Silent fail untuk SWR strategy
+    });
 
-  return cachedResponse || fetchPromise.then((response) => {
-    if (response) {
-      return response;
-    }
-    throw new Error('No cached response and network failed');
-  });
+  return cachedResponse || fetchPromise;
 }
 
-/**
- * Network First Strategy
- * Try network first, fallback to cache
- */
-async function networkFirst(request) {
-  try {
-    const networkResponse = await fetch(request);
+/* ================================================================
+ * PUSH NOTIFICATION SUPPORT
+ * ================================================================
+ * Purpose: Placeholder untuk future implementation
+ * ================================================================ */
 
-    if (networkResponse && networkResponse.status === 200) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, networkResponse.clone());
-    }
-
-    return networkResponse;
-  } catch (error) {
-    const cachedResponse = await caches.match(request);
-
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-
-    return new Response(
-      JSON.stringify({
-        error: 'Network request failed',
-        offline: true,
-        message: 'Anda sedang offline. Koneksi diperlukan untuk fitur ini.',
-      }),
-      {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-  }
-}
-
-/**
- * BACKGROUND SYNC
- * Sync form submissions when connection is restored
- */
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-forms') {
-    event.waitUntil(syncForms());
-  }
-});
-
-/**
- * Sync pending form submissions
- */
-async function syncForms() {
-  try {
-    const cache = await caches.open('form-submissions');
-    const requests = await cache.keys();
-
-    for (const request of requests) {
-      try {
-        const response = await cache.match(request);
-        const data = await response.json();
-
-        await fetch(request, {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        await cache.delete(request);
-      } catch (error) {
-        // Keep in cache for next sync attempt
-      }
-    }
-  } catch (error) {
-    throw error;
-  }
-}
-
-/**
- * PUSH NOTIFICATIONS
- * Handle incoming push messages
- */
 self.addEventListener('push', (event) => {
   const options = {
-    body: event.data ? event.data.text() : 'Notifikasi baru dari Tajawaz Solutions',
-    icon: '/assets/images/favicon/web-app-manifest-192x192.png',
-    badge: '/assets/images/favicon/favicon-96x96.png',
-    vibrate: [200, 100, 200],
+    body: event.data ? event.data.text() : 'New notification from Tajawaz Solutions',
+    icon: './assets/images/favicon/web-app-manifest-192x192.png',
+    badge: './assets/images/favicon/icon-72x72.png',
+    vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: 1,
-    },
-    actions: [
-      {
-        action: 'explore',
-        title: 'Lihat',
-        icon: '/assets/images/favicon/favicon-96x96.png',
-      },
-      {
-        action: 'close',
-        title: 'Tutup',
-        icon: '/assets/images/favicon/favicon-96x96.png',
-      },
-    ],
-    tag: 'tajawaz-notification',
-    requireInteraction: false,
-    renotify: true,
+      primaryKey: 1
+    }
   };
 
-  event.waitUntil(self.registration.showNotification('Tajawaz Solutions', options));
+  event.waitUntil(
+    self.registration.showNotification('Tajawaz Solutions', options)
+  );
 });
 
-/**
- * NOTIFICATION CLICK
- * Handle notification interactions
- */
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-
-  if (event.action === 'explore') {
-    event.waitUntil(
-      clients.openWindow('/').catch(() => {
-        // Failed to open window
-      })
-    );
-  }
-});
-
-/**
- * MESSAGE HANDLER
- * Communication with main thread
- */
-self.addEventListener('message', (event) => {
-  // Skip waiting - activate new SW immediately
-  if (event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-
-  // Cache specific URLs on demand
-  if (event.data.type === 'CACHE_URLS') {
-    event.waitUntil(
-      caches.open(CACHE_NAME).then((cache) => {
-        return cache.addAll(event.data.payload);
-      })
-    );
-  }
-
-  // Clear all caches
-  if (event.data.type === 'CLEAR_CACHE') {
-    event.waitUntil(
-      caches.keys().then((cacheNames) => {
-        return Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
-      })
-    );
-  }
-
-  // Get cache status
-  if (event.data.type === 'GET_CACHE_STATUS') {
-    event.waitUntil(
-      caches.keys().then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map(async (cacheName) => {
-            const cache = await caches.open(cacheName);
-            const keys = await cache.keys();
-            return { name: cacheName, items: keys.length };
-          })
-        ).then((cacheStats) => {
-          event.ports[0].postMessage({ type: 'CACHE_STATUS', payload: cacheStats });
-        });
-      })
-    );
-  }
-});
-
-/**
- * PERIODIC BACKGROUND SYNC
- * Sync data periodically in the background
- */
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'content-sync') {
-    event.waitUntil(syncContent());
-  }
-});
-
-/**
- * Sync content periodically
- */
-async function syncContent() {
-  try {
-    // Sync logic here
-    const cache = await caches.open(CACHE_NAME);
-    // Update cached pages in background
-  } catch (error) {
-    // Handle error
-  }
-}
-
-/**
- * Cache Size Management
- * Clean up old cache entries if size exceeds limit
- */
-async function manageCacheSize() {
-  const cache = await caches.open(CACHE_NAME);
-  const keys = await cache.keys();
-
-  let totalSize = 0;
-  const entries = [];
-
-  for (const request of keys) {
-    const response = await cache.match(request);
-    const blob = await response.blob();
-    const size = blob.size;
-    const date = new Date(response.headers.get('date')).getTime();
-
-    totalSize += size;
-    entries.push({ request, size, date });
-  }
-
-  if (totalSize > MAX_CACHE_SIZE) {
-    // Sort by date (oldest first)
-    entries.sort((a, b) => a.date - b.date);
-
-    // Delete oldest entries until under limit
-    let currentSize = totalSize;
-    for (const entry of entries) {
-      if (currentSize <= MAX_CACHE_SIZE) break;
-      await cache.delete(entry.request);
-      currentSize -= entry.size;
-    }
-  }
-}
-
-// Run cache management on activate
-self.addEventListener('activate', (event) => {
-  event.waitUntil(manageCacheSize());
+  event.waitUntil(
+    clients.openWindow('/')
+  );
 });
