@@ -37,11 +37,11 @@ const PRECACHE_ASSETS = [
   '/assets/images/favicon/web-app-manifest-512x512.png',
   '/',
   '/index.html', // Keep this for fallback
-  '/pages/about',
-  '/pages/services',
-  '/pages/contact',
-  '/pages/bio-profile',
-  '/pages/products-digital'
+  '/pages/about.html',
+  '/pages/services.html',
+  '/pages/contact.html',
+  '/pages/bio-profile.html',
+  '/pages/products-digital.html'
 ];
 
 /* ================================================================
