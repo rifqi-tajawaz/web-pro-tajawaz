@@ -1,0 +1,153 @@
+{
+  "name": "Tajawaz Solutions - The Art Of Exceeding Value",
+  "short_name": "Tajawaz",
+  "description": "Ekosistem bisnis lengkap Indonesia: mentorship praktis, tools bisnis, peluang kemitraan & komunitas entrepreneur. Raih kebebasan finansial dari berbagai latar belakang.",
+  "start_url": "/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#5f2ded",
+  "background_color": "#040404",
+  "lang": "id",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "./assets/images/favicon/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/images/favicon/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/images/favicon/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/images/favicon/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/images/favicon/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/images/favicon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./assets/images/favicon/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/images/favicon/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./assets/images/favicon/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/images/favicon/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./assets/pwa/screenshot-desktop.jpg",
+      "sizes": "1920x900",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Tampilan Desktop Tajawaz Solutions"
+    },
+    {
+      "src": "./assets/pwa/screenshot-mobile.jpg",
+      "sizes": "600x800",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Tampilan Mobile Tajawaz Solutions"
+    }
+  ],
+  "categories": ["business", "education", "productivity", "finance"],
+  "shortcuts": [
+    {
+      "name": "Kenali Founder",
+      "short_name": "Bio",
+      "description": "Pelajari tentang founder kami",
+      "url": "./pages/bio-profile.html",
+      "icons": [
+        {
+          "src": "./assets/images/favicon/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Layanan Kami",
+      "short_name": "Layanan",
+      "description": "Jelajahi layanan kami",
+      "url": "./pages/services.html",
+      "icons": [
+        {
+          "src": "./assets/images/favicon/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Hubungi Kami",
+      "short_name": "Kontak",
+      "description": "Hubungi tim kami",
+      "url": "./pages/contact.html",
+      "icons": [
+        {
+          "src": "./assets/images/favicon/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Tentang Kami",
+      "short_name": "About",
+      "description": "Pelajari lebih lanjut tentang Tajawaz Solutions",
+      "url": "./pages/about.html",
+      "icons": [
+        {
+          "src": "./assets/images/favicon/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

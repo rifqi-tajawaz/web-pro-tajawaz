@@ -1,0 +1,117 @@
+/* ==================================
+// CSS KRITIS (INLINE)
+// ================================== */
+/*
+  File ini berisi gaya CSS paling penting yang diperlukan
+  untuk merender konten "above-the-fold" (bagian atas halaman).
+  CSS ini di-inline langsung di dalam tag <head> HTML untuk
+  mempercepat First Contentful Paint (FCP) dan meningkatkan
+  skor PageSpeed.
+*/
+
+/* ========== RESET DASAR ========== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== GAYA KRITIS BANNER/HERO ========== */
+.section-banner {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-container {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+}
+
+.title-heading-banner {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.banner-content {
+  max-width: 600px;
+}
+
+/* ========== TIPOGRAFI KRITIS ========== */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+p {
+  margin: 0 0 1rem;
+  line-height: 1.6;
+}
+
+/* ========== TOMBOL KRITIS ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-wrap: nowrap;
+}
+
+.btn-accent {
+  background: #FF6B35;
+  color: #fff;
+}
+
+.btn-title span {
+  white-space: nowrap;
+}
+
+/* ========== LAYOUT KRITIS ========== */
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+/* ========== PENCEGAHAN FOUC (FLASH OF UNSTYLED CONTENT) ========== */
+header,
+main,
+footer {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}

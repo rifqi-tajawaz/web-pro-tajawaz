@@ -1,0 +1,76 @@
+# Tajawaz Solutions - Git Ignore
+# Version: 2.0.0
+
+# Build artifacts
+build/
+dist/
+*.log
+*.tar.gz
+
+# Backup files
+backups/
+*.bak
+*.backup
+
+# Environment files
+.env
+.env.local
+.env.production
+config/.env
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*~
+
+# Node modules (if using npm)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Reports
+*-report.txt
+validation-report.txt
+optimization-report.txt
+deployment-report.txt
+
+# Cache
+.cache/
+*.cache
+
+# Compiled output (optional - comment out if you want to track)
+# public/assets/
+# public/pages/
+# public/components/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# PHP
+vendor/
+composer.lock
+
+# Uploads (if any)
+uploads/
+*.uploaded
