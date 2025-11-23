@@ -1,19 +1,17 @@
 /* ================================================================
  * SERVICE WORKER - TAJAWAZ SOLUTIONS PWA
  * ================================================================
- * Version: 4.3.0 - Production Ready
+ * Version: 4.3.1 - Production Ready
  * 
- * Purpose: Progressive Web App service worker untuk offline capability
+ * Purpose: Progressive Web App service worker for offline capability
  * 
  * Caching Strategies:
  * - HTML Navigation: Network First (fresh content prioritized)
  * - Assets (CSS, JS, Images): Stale-While-Revalidate
  * - 3rd Party (Analytics, CDN): Network Only
- * 
- * IMPORTANT: File ini HARUS di root directory (/)
  * ================================================================ */
 
-const CACHE_VERSION = 'v4.3.0';
+const CACHE_VERSION = 'v4.3.1';
 const CACHE_NAME = `tajawaz-${CACHE_VERSION}`;
 const OFFLINE_PAGE = '/pwa/offline.html';
 
@@ -26,6 +24,7 @@ const PRECACHE_ASSETS = [
   '/assets/css/main/style.css',
   '/assets/js/main/script.js',
   '/assets/js/main/base-url.js',
+  '/assets/js/main/submit-form.js',
   '/assets/images/favicon/favicon.ico',
   '/assets/images/favicon/favicon.svg',
   '/assets/images/favicon/favicon-96x96.png',
@@ -36,18 +35,17 @@ const PRECACHE_ASSETS = [
   '/assets/images/favicon/web-app-manifest-192x192.png',
   '/assets/images/favicon/icon-384x384.png',
   '/assets/images/favicon/web-app-manifest-512x512.png',
-  '/index.html',
-  '/pages/about.html',
-  '/pages/services.html',
-  '/pages/contact.html',
-  '/pages/bio-profile.html',
-  '/pages/products-digital.html'
+  '/',
+  '/index.html', // Keep this for fallback
+  '/pages/about',
+  '/pages/services',
+  '/pages/contact',
+  '/pages/bio-profile',
+  '/pages/products-digital'
 ];
 
 /* ================================================================
  * INSTALL EVENT
- * ================================================================
- * Purpose: Precache critical assets saat SW pertama kali install
  * ================================================================ */
 
 self.addEventListener('install', (event) => {
@@ -69,8 +67,6 @@ self.addEventListener('install', (event) => {
         const offlinePage = await cache.match(OFFLINE_PAGE);
         if (!offlinePage) {
           console.error('[SW] CRITICAL: Offline page not cached!');
-        } else {
-          console.log('[SW] ✓ Offline page successfully cached');
         }
         return self.skipWaiting();
       })
@@ -79,8 +75,6 @@ self.addEventListener('install', (event) => {
 
 /* ================================================================
  * ACTIVATE EVENT
- * ================================================================
- * Purpose: Cleanup old caches dan activate new service worker
  * ================================================================ */
 
 self.addEventListener('activate', (event) => {
@@ -102,8 +96,6 @@ self.addEventListener('activate', (event) => {
 
 /* ================================================================
  * FETCH EVENT
- * ================================================================
- * Purpose: Intercept network requests dan apply caching strategies
  * ================================================================ */
 
 self.addEventListener('fetch', (event) => {
@@ -112,35 +104,24 @@ self.addEventListener('fetch', (event) => {
 
   if (!url.protocol.startsWith('http')) return;
 
-  /**
-   * Cross-Origin Resources
-   * Purpose: Let browser handle 3rd party resources naturally
-   */
-  if (url.origin !== self.location.origin) {
+  // Cross-Origin Resources
+  if (url.origin !== self.location.origin) return;
+
+  // API Calls - Network Only (never cache POSTs or API)
+  if (url.pathname.includes('/api/') || request.method !== 'GET') {
     return;
   }
 
-  /**
-   * Admin/Edit Paths
-   * Purpose: Always fetch fresh untuk admin interfaces
-   */
-  if (url.pathname.includes('/admin') || url.pathname.includes('/edit')) {
-    return;
-  }
+  // Admin/Edit Paths
+  if (url.pathname.includes('/admin') || url.pathname.includes('/edit')) return;
 
-  /**
-   * Strategy A: HTML Pages - Network First
-   * Purpose: Prioritas content terbaru, fallback ke cache
-   */
+  // Strategy A: HTML Pages - Network First
   if (request.headers.get('Accept')?.includes('text/html')) {
     event.respondWith(networkFirstHTML(request));
     return;
   }
 
-  /**
-   * Strategy B: Static Assets - Stale-While-Revalidate
-   * Purpose: Speed + background updates
-   */
+  // Strategy B: Static Assets - Stale-While-Revalidate
   if (
     url.pathname.includes('assets/') ||
     request.url.match(/\.(css|js|jpg|jpeg|png|svg|webp|gif|woff|woff2|ttf|eot|ico|json)$/i)
@@ -156,12 +137,6 @@ self.addEventListener('fetch', (event) => {
  * CACHING STRATEGIES
  * ================================================================ */
 
-/**
- * Network First Strategy
- * 
- * Purpose: Fetch dari network dulu, fallback ke cache jika offline
- * Use Case: HTML pages yang butuh content terbaru
- */
 async function networkFirstHTML(request) {
   try {
     const networkResponse = await fetch(request);
@@ -175,31 +150,26 @@ async function networkFirstHTML(request) {
     const cachedResponse = await caches.match(request);
     if (cachedResponse) return cachedResponse;
 
+    // Try to find if we have the .html version cached if the clean URL is missing
+    const url = new URL(request.url);
+    if (!url.pathname.endsWith('.html')) {
+         const htmlPath = url.pathname + '.html';
+         const cachedHtml = await caches.match(htmlPath);
+         if (cachedHtml) return cachedHtml;
+    }
+
     console.log('[SW] Network failed. Serving offline page...');
     const cache = await caches.open(CACHE_NAME);
     let offlineResponse = await cache.match(OFFLINE_PAGE);
 
-    if (!offlineResponse) {
-      const altOfflineResponse = await cache.match('/pwa/offline.html');
-      if (altOfflineResponse) offlineResponse = altOfflineResponse;
-    }
-
     if (offlineResponse) {
-      console.log('[SW] Served offline page from cache.');
       return offlineResponse;
     } else {
-      console.warn('[SW] Offline page not found in cache.');
       return new Response('Offline', { status: 503 });
     }
   }
 }
 
-/**
- * Stale-While-Revalidate Strategy
- * 
- * Purpose: Return cached content immediately, update cache di background
- * Use Case: Static assets yang jarang berubah
- */
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
   const cachedResponse = await cache.match(request);
@@ -211,39 +181,7 @@ async function staleWhileRevalidate(request) {
       }
       return networkResponse;
     })
-    .catch((err) => {
-      // Silent fail untuk SWR strategy
-    });
+    .catch((err) => { });
 
   return cachedResponse || fetchPromise;
 }
-
-/* ================================================================
- * PUSH NOTIFICATION SUPPORT
- * ================================================================
- * Purpose: Placeholder untuk future implementation
- * ================================================================ */
-
-self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'New notification from Tajawaz Solutions',
-    icon: './assets/images/favicon/web-app-manifest-192x192.png',
-    badge: './assets/images/favicon/icon-72x72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
-    }
-  };
-
-  event.waitUntil(
-    self.registration.showNotification('Tajawaz Solutions', options)
-  );
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  event.waitUntil(
-    clients.openWindow('/')
-  );
-});
