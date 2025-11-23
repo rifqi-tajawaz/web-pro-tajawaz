@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offline - Tajawaz Solutions</title>
+    <meta name="description" content="Anda sedang offline. Periksa koneksi internet Anda untuk kembali mengakses Tajawaz Solutions." />
+    <meta name="theme-color" content="#5f2ded" />
+    
+    <!-- CRITICAL: Use absolute path for offline reliability -->
+    <link rel="stylesheet" href="../assets/css/main/style.css" />
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
+  </head>
+  <body>
+    <main>
+      <div class="section-404">
+        <div class="banner-layout-404">
+          <div class="layout-404">
+            <span class="text-404 title-heading" style="font-size: 5rem;">OFFLINE</span>
+            <h3>Tidak Ada Koneksi Internet</h3>
+            <p>Sepertinya Anda sedang offline. Jangan khawatir, halaman ini akan otomatis dimuat ulang ketika koneksi Anda kembali.</p>
+            <div style="margin-top: 2rem;">
+              <button onclick="window.location.reload()" class="btn btn-accent">
+                <div class="btn-title">
+                  <span>Coba Lagi</span>
+                </div>
+                <div class="icon-circle">
+                  <span style="font-size: 1.2rem;">↻</span>
+                </div>
+              </button>
+              <a href="../" class="btn btn-accent" style="margin-left: 1rem;">
+                <div class="btn-title">
+                  <span>Kembali ke Beranda</span>
+                </div>
+                <div class="icon-circle">
+                  <span>→</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      // Auto-reload when online
+      window.addEventListener('online', function() {
+        window.location.reload();
+      });
+    </script>
+  </body>
+</html>
